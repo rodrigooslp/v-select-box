@@ -21,6 +21,8 @@
 <script>
   import $ from 'jquery'
   import { debounce } from 'lodash'
+  import 'bootstrap/dist/css/bootstrap.css'
+  import 'font-awesome/css/font-awesome.css'
   export default {
     name: 'VSelectBox',
     props: ['options'],
