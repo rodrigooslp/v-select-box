@@ -1,4 +1,2 @@
-import { VSelectBox } from './VSelectBox.vue'
-export default {
-  VSelectBox
-}
+var vSelectBox = require('./VSelectBox.vue')
+export default vSelectBox
