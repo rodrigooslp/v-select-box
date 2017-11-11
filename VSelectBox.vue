@@ -108,3 +108,48 @@
     }
   }
 </script>
+
+<style scoped>
+  .filtro-title {
+    font-size: 13px;
+  }
+  .filtro-content {
+    width: 100%;
+    margin-bottom: 30px;
+  }
+  .filtro-search {
+    margin-bottom: 15px;
+  }
+  .filtro-list {
+    list-style: none;
+    padding: 0;
+    overflow-y: scroll;
+    height: 200px;
+    border: 1px solid #eee;
+    background-color: #fff;
+  }
+  .filtro-item {
+    background-color: #fff;
+    padding: 6px 12px;
+    position: relative;
+    margin-bottom: 1px;
+    cursor: pointer;
+    transition: all .2s linear;
+  }
+  .filtro-item:hover {
+    background-color: #eee;
+  }
+  .filtro-item .icon {
+    font-size: 10px;
+    right: 6px;
+    position: absolute;
+    top: 50%;
+    margin-top: -5px;
+  }
+  .filtro-item.selected {
+    background-color: #81f0bd;
+  }
+  .filtro-item.selected:hover {
+    background-color: #54eba5;
+  }
+</style>
