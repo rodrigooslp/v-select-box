@@ -1,4 +1,4 @@
-import { VSelectBox } from './VSelectBox'
+import { VSelectBox } from './VSelectBox.vue'
 export default {
   VSelectBox
 }
