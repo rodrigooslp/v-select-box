@@ -90,4 +90,4 @@ There is a simple working example in [this](https://github.com/rodrigooslp/v-sel
 New Features
 -------------------------------------
 
-There is a list of features that I'm currently working on. They will be pushed to this repo as soon as they're finished. Your feedback is appreciated!
+There is a list of features that I'm currently working on. They will be pushed to this repository as soon as they're finished. Your feedback is appreciated!
