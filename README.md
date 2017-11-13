@@ -81,3 +81,13 @@ Name            | Type     | Default   | Description
 :-------------- | :------  | :------   | :----------
 name            | string   | nome      | The name of the param to send the search query in the requests.
 pageSize        | string   | pageSize  | The name of the param to send the size of the page in the requests.
+
+Example
+-------------------------------------
+
+There is a simple working example in [this](https://github.com/rodrigooslp/v-select-box-example) repository.
+
+New Features
+-------------------------------------
+
+There is a list of features that I'm currently working on. They will be pushed to this repo as soon as they're finished. Your feedback is appreciated!
