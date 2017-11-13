@@ -1,7 +1,7 @@
 {
   "name": "v-select-box",
-  "version": "0.4.1",
-  "description": "A vue.js component to provide a box with a list of items with pagination.",
+  "version": "0.5.0",
+  "description": "A vue.js component to provide a box with a list of items with search and pagination.",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
