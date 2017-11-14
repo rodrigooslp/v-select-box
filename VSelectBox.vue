@@ -119,6 +119,7 @@
   .filtro-content {
     width: 100%;
     margin-bottom: 30px;
+    max-width: 240px;
   }
   .filtro-search {
     margin-bottom: 15px;
