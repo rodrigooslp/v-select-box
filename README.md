@@ -14,7 +14,6 @@ Installation
 -------------------------------------
 
     npm install v-select-box
-    npm install v-select-box-vuex
 
 Basic Usage
 -------------------------------------
@@ -130,14 +129,14 @@ It doesn't need to return anything.
   
 -------------------------------------
 
-Example
+Examples
 -------------------------------------
 
-There is a simple working example in [this](https://github.com/rodrigooslp/v-select-box-example) repository.
+There is a simple working example in [this](https://github.com/rodrigooslp/v-select-box-example) repository. A full example with [v-select-box-vuex](https://www.npmjs.com/package/v-select-box-vuex), with all bells and whistles is on the roadmap and will be up soon.
 
 New Features
 -------------------------------------
 
-There is a list of features that I'm currently working on. They will be pushed to this repository as soon as they're finished.
+There is a list of features that are currently being worked on. They will be pushed to this repository as soon as they're finished.
   
 Your feedback is appreciated!
