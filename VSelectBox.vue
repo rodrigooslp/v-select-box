@@ -82,7 +82,8 @@
 
           onSearch({
             [search]: this.query,
-            [pageSize]: this.itemsPerPage
+            [pageSize]: this.itemsPerPage,
+            clear: true
           }).then(() => {
             this.loading = false
             this.createTooltips()
