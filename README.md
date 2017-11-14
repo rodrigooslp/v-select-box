@@ -20,14 +20,12 @@ Basic Usage
 -------------------------------------
 
 ```html
-  <template>
-    <div id="app">
-      <v-select-box :options="options"></v-select-box>
-    </div>
-  </template>
-```
+<template>
+  <div id="app">
+    <v-select-box :options="options"></v-select-box>
+  </div>
+</template>
 
-```javascript
 <script>
   import VSelectBox from 'v-select-box'
   export default {
@@ -79,8 +77,58 @@ Params
 
 Name            | Type     | Default   | Description
 :-------------- | :------  | :------   | :----------
-name            | string   | nome      | The name of the param to send the search query in the requests.
+search          | string   | nome      | The name of the param to send the search query in the requests.
 pageSize        | string   | pageSize  | The name of the param to send the size of the page in the requests.
+
+Methods
+-------------------------------------
+#### onSelect()
+The `onSelect()` method is called after the user clicks an item and receives an object containing the item and a flag showing if multiSelect is enabled or not. It doesn't need to return anything.
+##### Syntax
+`onSelect({ item, multiSelect })`
+##### Parameters
+- `item` the object representing the list item. It has three properties: 
+  - `id` an unique identifier
+  - `text` the text visible on the item itself
+  - `selected` a boolean value indicating if the item is selected or not
+- `multiSelect` the boolean value showing if the v-select-box multiSelect mode is active 
+##### Return Value
+The `onSelect()` method don't have to return anything.
+  
+--------------------------------------
+#### onSearch()
+The `onSearch()` method is called after a debounce when the search box has an input. When it is called, the parameter is an object with the search term that was typed in the search box and the page size. This method needs to return a Promise. The reason is that after the search is done, the component has to redraw the tooltips for the new items.
+##### Syntax
+`onSearch({ [search], [pageSize] })`
+##### Parameters
+- `search` the actual name of the property depends on the `params.search`, that could've been passed to the component via the options object. If a `params.search` is not set, the default name for this parameter is `nome`.
+- `pageSize` the actual name of the property depends on the `params.pageSize`, that could've been passed to the component via the options object. If a `params.pageSize` is not set, the default name for this parameter is `pageSize`.
+##### Return Value
+For the reason expressed above, the `onSearch()` method has to return a Promise.
+  
+--------------------------------------
+#### loadMore()
+The `loadMore()` method is called when the user scrolls down to the end of the list. When it is called, the parameter is an object with the search term that was typed in the search box and the page size and the number of the current page plus one, if that page exists. If the list is already at the last page, this method won't be called. The `loadMore()` method needs to return a Promise. The reason is that after the loading is done, the component has to redraw the tooltips for the new items.
+##### Syntax
+`loadMore({ [search], [pageSize], page })`
+##### Parameters
+- `search` the actual name of the property depends on the `params.search`, that could've been passed to the component via the options object. If a `params.search` is not set, the default name for this parameter is `nome`.
+- `pageSize` the actual name of the property depends on the `params.pageSize`, that could've been passed to the component via the options object. If a `params.pageSize` is not set, the default name for this parameter is `pageSize`.
+- `page` the number of the page that the component is requesting. The next page.
+##### Return Value
+For the reason expressed above, the `loadMore()` method has to return a Promise.
+  
+--------------------------------------
+#### clearItems()
+The `clearItems()` method is an internal function that clears the list of items. It is exposed this way to help us work with vuex. It will be reworked/removed in the future versions.
+##### Syntax
+`clearItems()`
+##### Parameters
+It doesn't have any parameters
+##### Return Value
+It doesn't need to return anything.
+  
+-------------------------------------
 
 Example
 -------------------------------------
