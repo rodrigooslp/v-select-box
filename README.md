@@ -91,6 +91,8 @@ The `onSelect()` method is called after the user clicks an item and receives an 
   - `text` the text visible on the item itself
   - `selected` a boolean value indicating if the item is selected or not
 - `multiSelect` the boolean value showing if the v-select-box multiSelect mode is active 
+
+  PS: this is the item suggested structure, there isn't any place where this is hardcoded. It is done this way because it's easier to plug the vuex helper with a simple format like this.
 ##### Return Value
 The `onSelect()` method don't have to return anything.
   
