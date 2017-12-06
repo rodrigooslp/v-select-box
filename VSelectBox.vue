@@ -1,26 +1,35 @@
 <template>
-  <div class="filtro-content">
-    <div class="filtro-search">
-      <div class="input-group">
-        <input ref="input" type="text" class="form-control input-sm" v-model="query" @input="debounce">
-        <span class="input-group-addon"><i class="fa fa-search"></i></span>
+  <div>
+    <div class="bordered item-box">
+      <div v-for="selected in options.selected" class="var-item">
+        <div class="label-item">
+          <span class="text">{{selected.text}}</span><span class="remove" @click="remove(selected)">×</span>
+        </div>
       </div>
     </div>
-    <ul ref="list" class="filtro-list" @scroll="onScroll">
-      <li v-for="item in options.items" class="filtro-item" :class="{ 'selected': item.selected }" @click="select(item)" data-toggle="tooltip" data-placement="top" :title="item.text">
-        <span>{{ item.text }}</span>
-      </li>
-      <li v-if="options.items.length === 0" class="filtro-item">
-        <span v-if="loading">Pesquisando...</span>
-        <span v-else>Nenhum item encontrado.</span>
-      </li>
-    </ul>
+    <div class="filtro-content">
+      <div class="filtro-search">
+        <div class="input-group">
+          <input ref="input" type="text" class="form-control input-sm" v-model="query" @input="debounce">
+          <span class="input-group-addon"><i class="fa fa-search"></i></span>
+        </div>
+      </div>
+      <ul ref="list" class="filtro-list" @scroll="onScroll">
+        <li v-for="item in options.items" class="filtro-item" :class="{ 'selected': item.selected }" @click="select(item)" data-toggle="tooltip" data-placement="top" :title="item.text">
+          <span>{{ item.text }}</span>
+        </li>
+        <li v-if="options.items.length === 0" class="filtro-item">
+          <span v-if="loading">Pesquisando...</span>
+          <span v-else>Nenhum item encontrado.</span>
+        </li>
+      </ul>
+    </div>
   </div>
 </template>
 
 <script>
   import $ from 'jquery'
-  import { debounce } from 'lodash'
+  import { debounce, remove } from 'lodash'
   import 'bootstrap'
   import 'bootstrap/dist/css/bootstrap.css'
   import 'font-awesome/css/font-awesome.css'
@@ -28,10 +37,11 @@
     name: 'VSelectBox',
     props: ['options'],
     created () {
-      const { clearItems, params, itemsPerPage } = this.options
+      const { clearItems, params, itemsPerPage, selected } = this.options
 
       if (clearItems) clearItems()
       if (itemsPerPage) this.itemsPerPage = itemsPerPage
+      if (!selected) this.options.selected = []
 
       if (params) {
         const { search, pageSize } = params
@@ -41,6 +51,15 @@
       }
     },
     methods: {
+      remove (item) {
+        const {id} = item
+        remove(this.options.selected, i => i.id === id)
+        if (this.options.onRemove) {
+          this.options.onRemove(item)
+        }
+
+        this.options.items.find(i => i.id === item.id).selected = false
+      },
       createTooltips () {
         $(this.$el).find('[data-toggle="tooltip"]').tooltip()
       },
@@ -67,6 +86,13 @@
             }).then(() => {
               this.loading = false
               this.createTooltips()
+              this.options.selected.forEach(s => {
+                this.options.items.forEach(i => {
+                  if (s.id === i.id) {
+                    i.selected = true
+                  }
+                })
+              })
             })
           }
         }
@@ -87,11 +113,26 @@
           }).then(() => {
             this.loading = false
             this.createTooltips()
+            this.options.selected.forEach(s => {
+              this.options.items.forEach(i => {
+                if (s.id === i.id) {
+                  i.selected = true
+                }
+              })
+            })
           })
         }
       },
       select (item) {
         const { multiSelect, onSelect } = this.options
+
+        item.selected = true
+        if (!this.options.selected.find(i => i.id === item.id)) {
+          this.options.selected.push(item)
+        } else {
+          this.remove(item)
+          item.selected = false
+        }
 
         if (onSelect) {
           onSelect({ item, multiSelect })
@@ -156,5 +197,38 @@
   }
   .filtro-item.selected:hover {
     background-color: #54eba5;
+  }
+  .bordered {
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    margin-bottom: 20px;
+  }
+  .item-box {
+    min-height: 30px;
+    max-width: 240px;
+    padding: 4px;
+  }
+  .var-item {
+    display: inline-block;
+    padding: 2px;
+  }
+  .label-item {
+    background-color: #2d9fcb;
+    border: 1px solid #2d9fcb;
+    color: #fff;
+    display: inline-block;
+    padding: 4px 6px;
+    border-radius: 2px;
+    cursor: pointer;
+    transition: all .2s linear;
+    font-size: 12px;
+  }
+  .label-item .text {
+    padding: 2px;
+  }
+  .label-item .remove {
+    padding: 2px;
+    z-index: 2;
+    transition: all .2s linear;
   }
 </style>
