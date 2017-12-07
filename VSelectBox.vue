@@ -1,13 +1,13 @@
 <template>
   <div>
-    <div class="bordered item-box">
+    <div class="bordered item-box" @click="open">
       <div v-for="selected in options.selected" class="var-item">
         <div class="label-item">
           <span class="text">{{selected.text}}</span><span class="remove" @click="remove(selected)">×</span>
         </div>
       </div>
     </div>
-    <div class="filtro-content">
+    <div class="filtro-content" :class="{'hide': !opened}" @click="stop">
       <div class="filtro-search">
         <div class="input-group">
           <input ref="input" type="text" class="form-control input-sm" v-model="query" @input="debounce">
@@ -15,7 +15,7 @@
         </div>
       </div>
       <ul ref="list" class="filtro-list" @scroll="onScroll">
-        <li v-for="item in options.items" class="filtro-item" :class="{ 'selected': item.selected }" @click="select(item)" data-toggle="tooltip" data-placement="top" :title="item.text">
+        <li v-for="item in options.items" class="filtro-item" :class="{ 'selected': item.selected }" @click="select(item)">
           <span>{{ item.text }}</span>
         </li>
         <li v-if="options.items.length === 0" class="filtro-item">
@@ -28,7 +28,6 @@
 </template>
 
 <script>
-  import $ from 'jquery'
   import { debounce, remove } from 'lodash'
   import 'bootstrap'
   import 'bootstrap/dist/css/bootstrap.css'
@@ -50,7 +49,23 @@
         if (pageSize) this.params.pageSize = pageSize
       }
     },
+    mounted () {
+      document.onclick = (e) => {
+        this.opened = false
+      }
+    },
     methods: {
+      stop (e) {
+        e.stopPropagation()
+      },
+      open (e) {
+        this.opened = !this.opened
+        this.search().then(() => {
+          const element = this.$refs.list
+          element.scrollTop = 0
+        })
+        e.stopPropagation()
+      },
       remove (item) {
         const {id} = item
         remove(this.options.selected, i => i.id === id)
@@ -59,12 +74,6 @@
         }
 
         this.options.items.find(i => i.id === item.id).selected = false
-      },
-      createTooltips () {
-        $(this.$el).find('[data-toggle="tooltip"]').tooltip()
-      },
-      destroyTooltips () {
-        $(this.$el).find('[data-toggle="tooltip"]').tooltip('destroy')
       },
       isEndOfList () {
         const element = this.$refs.list
@@ -76,7 +85,6 @@
         if (loadMore) {
           if (page < pageCount && this.isEndOfList()) {
             const { search, pageSize } = this.params
-            this.destroyTooltips()
             this.loading = true
 
             loadMore({
@@ -85,7 +93,6 @@
               [pageSize]: this.itemsPerPage
             }).then(() => {
               this.loading = false
-              this.createTooltips()
               this.options.selected.forEach(s => {
                 this.options.items.forEach(i => {
                   if (s.id === i.id) {
@@ -103,16 +110,14 @@
         if (onSearch) {
           const { search, pageSize } = this.params
 
-          this.destroyTooltips()
           this.loading = true
 
-          onSearch({
+          return onSearch({
             [search]: this.query,
             [pageSize]: this.itemsPerPage,
             clear: true
           }).then(() => {
             this.loading = false
-            this.createTooltips()
             this.options.selected.forEach(s => {
               this.options.items.forEach(i => {
                 if (s.id === i.id) {
@@ -135,12 +140,13 @@
         }
 
         if (onSelect) {
-          onSelect({ item, multiSelect })
+          onSelect({ item, multiSelect: !!multiSelect })
         }
       }
     },
     data () {
       return {
+        opened: false,
         loading: false,
         params: {
           search: 'nome',
@@ -162,6 +168,9 @@
     width: 100%;
     margin-bottom: 30px;
     max-width: 240px;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
   }
   .filtro-search {
     margin-bottom: 15px;
@@ -201,10 +210,11 @@
   .bordered {
     border: 1px solid #ccc;
     border-radius: 3px;
-    margin-bottom: 20px;
+    margin-bottom: 10px;
   }
   .item-box {
-    min-height: 30px;
+    min-height: 40px;
+    width: 240px;
     max-width: 240px;
     padding: 4px;
   }
@@ -213,8 +223,8 @@
     padding: 2px;
   }
   .label-item {
-    background-color: #2d9fcb;
-    border: 1px solid #2d9fcb;
+    background-color: #16c372;
+    border: 1px solid #16c372;
     color: #fff;
     display: inline-block;
     padding: 4px 6px;
@@ -230,5 +240,8 @@
     padding: 2px;
     z-index: 2;
     transition: all .2s linear;
+  }
+  .hide {
+    display: none;
   }
 </style>
