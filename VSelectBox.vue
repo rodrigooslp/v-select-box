@@ -1,9 +1,9 @@
 <template>
-  <div>
+  <div v-click-outside="hide">
     <div class="bordered item-box" @click="open">
       <div v-for="selected in options.selected" class="var-item">
         <div class="label-item">
-          <span class="text">{{selected.text}}</span><span class="remove" @click="remove(selected)">×</span>
+          <span class="text">{{selected.text}}</span><span class="remove" @click="remove(selected, $event)">×</span>
         </div>
       </div>
     </div>
@@ -28,6 +28,7 @@
 </template>
 
 <script>
+  import ClickOutside from 'vue-click-outside'
   import { debounce, remove } from 'lodash'
   import 'bootstrap'
   import 'bootstrap/dist/css/bootstrap.css'
@@ -35,6 +36,9 @@
   export default {
     name: 'VSelectBox',
     props: ['options'],
+    directives: {
+      ClickOutside
+    },
     created () {
       const { clearItems, params, itemsPerPage, selected } = this.options
 
@@ -49,12 +53,10 @@
         if (pageSize) this.params.pageSize = pageSize
       }
     },
-    mounted () {
-      document.onclick = (e) => {
-        this.opened = false
-      }
-    },
     methods: {
+      hide () {
+        this.opened = false
+      },
       stop (e) {
         e.stopPropagation()
       },
@@ -66,14 +68,19 @@
         })
         e.stopPropagation()
       },
-      remove (item) {
+      remove (item, e) {
+        if (e) e.stopPropagation()
         const {id} = item
         remove(this.options.selected, i => i.id === id)
         if (this.options.onRemove) {
           this.options.onRemove(item)
         }
 
-        this.options.items.find(i => i.id === item.id).selected = false
+        const i = this.options.items.find(i => i.id === item.id)
+        if (i) {
+          i.selected = false
+        }
+        this.$forceUpdate()
       },
       isEndOfList () {
         const element = this.$refs.list
@@ -171,6 +178,9 @@
     padding: 8px;
     border: 1px solid #ccc;
     border-radius: 3px;
+    position: absolute;
+    z-index: 999;
+    background-color: #fff;
   }
   .filtro-search {
     margin-bottom: 15px;
@@ -217,6 +227,7 @@
     width: 240px;
     max-width: 240px;
     padding: 4px;
+    position: relative;
   }
   .var-item {
     display: inline-block;
