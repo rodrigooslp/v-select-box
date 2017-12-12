@@ -1,13 +1,13 @@
 <template>
   <div v-click-outside="hide">
-    <div class="bordered item-box" @click="open">
+    <div class="bordered item-box" @click="open" :class="{ 'err': hasError }">
       <div v-for="selected in options.selected" class="var-item">
         <div class="label-item">
           <span class="text">{{selected.text}}</span><span class="remove" @click="remove(selected, $event)">×</span>
         </div>
       </div>
     </div>
-    <div class="filtro-content" :class="{'hide': !opened}" @click="stop">
+    <div class="filtro-content" :class="{'hide': !opened}">
       <div class="filtro-search">
         <div class="input-group">
           <input ref="input" type="text" class="form-control input-sm" v-model="query" @input="debounce">
@@ -35,7 +35,7 @@
   import 'font-awesome/css/font-awesome.css'
   export default {
     name: 'VSelectBox',
-    props: ['options'],
+    props: ['options', 'hasError'],
     directives: {
       ClickOutside
     },
@@ -57,23 +57,23 @@
       hide () {
         this.opened = false
       },
-      stop (e) {
-        e.stopPropagation()
-      },
       open (e) {
         this.opened = !this.opened
         this.search().then(() => {
           const element = this.$refs.list
           element.scrollTop = 0
         })
-        e.stopPropagation()
       },
       remove (item, e) {
-        if (e) e.stopPropagation()
         const {id} = item
+        const { multiSelect, onSelect } = this.options
+
+        if (e) e.stopPropagation()
+
         remove(this.options.selected, i => i.id === id)
-        if (this.options.onRemove) {
-          this.options.onRemove(item)
+
+        if (onSelect) {
+          onSelect({ multiSelect: !!multiSelect })
         }
 
         const i = this.options.items.find(i => i.id === item.id)
@@ -141,13 +141,12 @@
         item.selected = true
         if (!this.options.selected.find(i => i.id === item.id)) {
           this.options.selected.push(item)
+          if (onSelect) {
+            onSelect({ item, multiSelect: !!multiSelect })
+          }
         } else {
           this.remove(item)
           item.selected = false
-        }
-
-        if (onSelect) {
-          onSelect({ item, multiSelect: !!multiSelect })
         }
       }
     },
@@ -254,5 +253,8 @@
   }
   .hide {
     display: none;
+  }
+  .err {
+    border-color: #e1777a;
   }
 </style>
