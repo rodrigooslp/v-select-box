@@ -175,7 +175,7 @@
     margin-bottom: 30px;
     max-width: 240px;
     padding: 8px;
-    border: 1px solid #ccc;
+    border: 1px solid #e5e6e7;
     border-radius: 3px;
     position: absolute;
     z-index: 999;
@@ -217,7 +217,7 @@
     background-color: #54eba5;
   }
   .bordered {
-    border: 1px solid #ccc;
+    border: 1px solid #e5e6e7;
     border-radius: 3px;
     margin-bottom: 10px;
   }
@@ -230,7 +230,7 @@
   }
   .var-item {
     display: inline-block;
-    padding: 2px;
+    padding: 1px;
   }
   .label-item {
     background-color: #16c372;
