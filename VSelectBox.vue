@@ -1,7 +1,7 @@
 <template>
   <div v-click-outside="hide">
     <div class="bordered item-box" @click="open" :class="{ 'err': hasError }">
-      <div v-for="selected in options.selected" class="var-item">
+      <div v-for="selected in currentOptions.selected" class="var-item">
         <div class="label-item">
           <span class="text">{{selected.text}}</span><span class="remove" @click="remove(selected, $event)">×</span>
         </div>
@@ -10,15 +10,15 @@
     <div class="filtro-content" :class="{'hide': !opened}">
       <div class="filtro-search">
         <div class="input-group">
-          <input ref="input" type="text" class="form-control input-sm" v-model="query" @input="debounce">
+          <input ref="input" type="text" class="form-control input-sm" v-model="currentOptions.query" @input="debounce">
           <span class="input-group-addon"><i class="fa fa-search"></i></span>
         </div>
       </div>
       <ul ref="list" class="filtro-list" @scroll="onScroll">
-        <li v-for="item in options.items" class="filtro-item" :class="{ 'selected': item.selected }" @click="select(item)">
+        <li v-for="item in currentOptions.items" class="filtro-item" :class="{ 'selected': item.selected }" @click="select(item)">
           <span>{{ item.text }}</span>
         </li>
-        <li v-if="options.items.length === 0" class="filtro-item">
+        <li v-if="currentOptions.items.length === 0" class="filtro-item">
           <span v-if="loading">Pesquisando...</span>
           <span v-else>Nenhum item encontrado.</span>
         </li>
@@ -28,11 +28,20 @@
 </template>
 
 <script>
+  import defaultOptions from './default'
   import ClickOutside from 'vue-click-outside'
   import { debounce, remove } from 'lodash'
   import 'bootstrap'
   import 'bootstrap/dist/css/bootstrap.css'
   import 'font-awesome/css/font-awesome.css'
+
+  const ERRORS = {
+    NO_OPTIONS: 'You should pass an object containing the options.',
+    WRONG_OPTIONS_TYPE: 'The "options" type should be object.',
+    NO_LOAD: 'You should pass a function to load the items.',
+    WRONG_LOAD_TYPE: 'The property "load" should be a function.'
+  }
+
   export default {
     name: 'VSelectBox',
     props: ['options', 'hasError'],
@@ -40,18 +49,7 @@
       ClickOutside
     },
     created () {
-      const { clearItems, params, itemsPerPage, selected } = this.options
-
-      if (clearItems) clearItems()
-      if (itemsPerPage) this.itemsPerPage = itemsPerPage
-      if (!selected) this.options.selected = []
-
-      if (params) {
-        const { search, pageSize } = params
-
-        if (search) this.params.search = search
-        if (pageSize) this.params.pageSize = pageSize
-      }
+      this.currentOptions = this.createOptions(this.options)
     },
     methods: {
       hide () {
@@ -59,27 +57,23 @@
       },
       open (e) {
         this.opened = !this.opened
-        this.search().then(() => {
+        this.load({ more: false }).then(() => {
           const element = this.$refs.list
           element.scrollTop = 0
         })
       },
       remove (item, e) {
-        const {id} = item
-        const { multiSelect, onSelect } = this.options
+        const { id } = item
+        const { onSelect } = this.currentOptions
 
         if (e) e.stopPropagation()
 
-        remove(this.options.selected, i => i.id === id)
+        remove(this.currentOptions.selected, i => i.id === id)
 
-        if (onSelect) {
-          onSelect({ multiSelect: !!multiSelect })
-        }
+        const i = this.currentOptions.items.find(i => i.id === item.id)
+        if (i) i.selected = false
 
-        const i = this.options.items.find(i => i.id === item.id)
-        if (i) {
-          i.selected = false
-        }
+        if (onSelect) onSelect()
         this.$forceUpdate()
       },
       isEndOfList () {
@@ -87,80 +81,71 @@
         return element.scrollHeight - element.scrollTop - element.clientHeight < 1
       },
       onScroll () {
-        const { loadMore, page, pageCount } = this.options
+        const { page, pageCount } = this.currentOptions
 
-        if (loadMore) {
-          if (page < pageCount && this.isEndOfList()) {
-            const { search, pageSize } = this.params
-            this.loading = true
-
-            loadMore({
-              page: page + 1,
-              [search]: this.query,
-              [pageSize]: this.itemsPerPage
-            }).then(() => {
-              this.loading = false
-              this.options.selected.forEach(s => {
-                this.options.items.forEach(i => {
-                  if (s.id === i.id) {
-                    i.selected = true
-                  }
-                })
-              })
-            })
-          }
+        if (page < pageCount && this.isEndOfList()) {
+          this.load({ more: true })
         }
       },
-      search () {
-        const { onSearch } = this.options
+      load ({ more }) {
+        const { load, params, itemsPerPage, query, page } = this.currentOptions
+        const { search, pageSize } = params
+        const pageNum = more ? page + 1 : page
+        this.loading = true
 
-        if (onSearch) {
-          const { search, pageSize } = this.params
-
-          this.loading = true
-
-          return onSearch({
-            [search]: this.query,
-            [pageSize]: this.itemsPerPage,
-            clear: true
-          }).then(() => {
+        return load({ [search]: query, [pageSize]: itemsPerPage, page: pageNum })
+          .then(response => {
             this.loading = false
-            this.options.selected.forEach(s => {
-              this.options.items.forEach(i => {
-                if (s.id === i.id) {
-                  i.selected = true
-                }
-              })
-            })
+
+            this.currentOptions.page = response.page
+            this.currentOptions.pageCount = response.pageCount
+            this.currentOptions.pageSize = response.pageSize
+            this.currentOptions.items = more ? this.currentOptions.items.concat(response.items) : response.items
+            this.checkSelected()
           })
-        }
       },
       select (item) {
-        const { multiSelect, onSelect } = this.options
+        const { multi, onSelect } = this.currentOptions
 
-        item.selected = true
-        if (!this.options.selected.find(i => i.id === item.id)) {
-          this.options.selected.push(item)
-          if (onSelect) {
-            onSelect({ item, multiSelect: !!multiSelect })
-          }
+        if (!multi) {
+          this.currentOptions.items.forEach(item => (item.selected = false))
+          this.currentOptions.selected = []
+        }
+
+        if (!this.currentOptions.selected.find(i => i.id === item.id)) {
+          item.selected = true
+          this.currentOptions.selected.push(item)
+          if (onSelect) onSelect(item)
         } else {
           this.remove(item)
-          item.selected = false
         }
+      },
+      createOptions (options) {
+        if (!options) throw ERRORS.NO_OPTIONS
+        if (typeof (options) !== 'object') throw ERRORS.WRONG_OPTIONS_TYPE
+        if (!options.load) throw ERRORS.NO_LOAD
+        if (typeof (options.load) !== 'function') throw ERRORS.WRONG_LOAD_TYPE
+
+        const params = { ...defaultOptions.params, ...options.params }
+        return { ...defaultOptions, ...options, params }
+      },
+      checkSelected () {
+        this.currentOptions.selected.forEach(s => {
+          this.currentOptions.items.forEach(i => {
+            if (s.id === i.id) {
+              i.selected = true
+            }
+          })
+        })
       }
     },
     data () {
       return {
+        query: '',
         opened: false,
         loading: false,
-        params: {
-          search: 'nome',
-          pageSize: 'pageSize'
-        },
-        query: '',
-        itemsPerPage: 10,
-        debounce: debounce(this.search, 500)
+        currentOptions: {},
+        debounce: debounce(this.load, 500)
       }
     }
   }
