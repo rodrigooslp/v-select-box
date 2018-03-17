@@ -27,8 +27,8 @@
           <span>{{ item.text }}</span>
         </li>
         <li v-if="config.items.length === 0" class="filtro-item">
-          <span v-if="loading">Pesquisando...</span>
-          <span v-else>Nenhum item encontrado.</span>
+          <span v-if="loading">{{ config.i18n[config.locale].loading }}</span>
+          <span v-else>{{ config.i18n[config.locale].notFound }}</span>
         </li>
       </ul>
     </div>
@@ -56,7 +56,6 @@
     HIDE_CALLED: 'The "hide" function has been called.',
     OPEN_CALLED: 'The "open" function has been called.',
     REMOVE_CALLED: 'The "remove" function has been called.',
-    INITIAL_LOAD: 'The initial items have been loaded with success.',
     END_OF_LIST: 'The list has been scrolled till the end.',
     CURRENT_PAGE: 'Current page and the total pages available.',
     LOAD_CALLED: 'The "load" function has been called.',
@@ -100,7 +99,6 @@
           this.$refs.input.focus()
         })
         this.load({ more: false }).then(() => {
-          this.debug(DEBUG.INITIAL_LOAD)
           const element = this.$refs.list
           element.scrollTop = 0
         })
@@ -177,7 +175,8 @@
         if (typeof (options.load) !== 'function') throw ERRORS.WRONG_LOAD_TYPE
 
         const params = { ...defaultOptions.params, ...options.params }
-        return { ...defaultOptions, ...options, params }
+        const i18n = { ...defaultOptions.i18n, ...options.i18n }
+        return { ...defaultOptions, ...options, params, i18n }
       },
       checkSelected () {
         this.config.selected.forEach(s => {

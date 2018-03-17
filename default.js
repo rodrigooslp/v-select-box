@@ -10,5 +10,16 @@ export default {
   params: {
     search: 'q',
     size: 'pageSize'
+  },
+  locale: 'enUS',
+  i18n: {
+    enUS: {
+      loading: 'Loading...',
+      notFound: 'No results were found.'
+    },
+    ptBR: {
+      loading: 'Carregando...',
+      notFound: 'Nenhum resultado foi encontrado.'
+    }
   }
 }
