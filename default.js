@@ -5,9 +5,9 @@ export default {
   query: '',
   page: 1,
   pageCount: 1,
-  itemsPerPage: 10,
+  pageSize: 10,
   params: {
     search: 'q',
-    pageSize: 'pageSize'
+    size: 'pageSize'
   }
 }

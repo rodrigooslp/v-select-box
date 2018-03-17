@@ -91,13 +91,14 @@
         }
       },
       load ({ more }) {
-        const { load, params, itemsPerPage, query, page } = this.currentOptions
-        const { search, pageSize } = params
+        const { load, params, pageSize, query, page } = this.currentOptions
+        const { search, size } = params
         let pageNum = more ? page + 1 : page
         this.loading = true
 
-        return load({ [search]: query, [pageSize]: itemsPerPage, page: pageNum })
+        return load({ [search]: query, [size]: pageSize, page: pageNum })
           .then(response => {
+            console.log(response)
             this.loading = false
 
             this.currentOptions.page = response.page
