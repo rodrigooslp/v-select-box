@@ -24,7 +24,7 @@
       </div>
       <ul ref="list" class="filtro-list" @scroll="onScroll">
         <li v-for="item in config.items" class="filtro-item" :class="{ 'selected': item.selected }" @click="select(item)">
-          <span>{{ item.text }}</span>
+          <span class="filtro-item-text">{{ item.text }}</span>
         </li>
         <li v-if="config.items.length === 0" class="filtro-item">
           <span v-if="loading">{{ config.i18n[config.locale].loading }}</span>
@@ -216,7 +216,7 @@
   .filtro-content {
     width: 100%;
     margin-bottom: 30px;
-    max-width: 240px;
+    max-width: 100%;
     padding: 8px;
     border: 1px solid #e5e6e7;
     border-radius: 3px;
@@ -236,6 +236,7 @@
     background-color: #fff;
   }
   .filtro-item {
+    overflow: hidden;
     background-color: #fff;
     padding: 6px 12px;
     position: relative;
@@ -268,8 +269,8 @@
     cursor: pointer;
     overflow: hidden;
     min-height: 40px;
-    width: 240px;
-    max-width: 240px;
+    /* width: 240px; */
+    max-width: 100%;
     padding: 4px;
     position: relative;
   }
@@ -392,5 +393,8 @@
     white-space: nowrap;
     vertical-align: middle;
     display: table-cell;
+  }
+  .filtro-item-text {
+    float: left;
   }
 </style>
