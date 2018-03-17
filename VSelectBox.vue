@@ -2,7 +2,7 @@
   <div v-click-outside="hide" class="v-select-box">
     <div class="bordered item-box" @click="open" :class="{ 'err': hasError }">
       <div class="items-panel">
-        <div v-for="selected in config.selected" class="var-item">
+        <div v-for="selected in config.selected" class="var-item filtro-item-text">
           <div class="label-item">
             <span class="text">{{selected.text}}</span><span class="remove" @click="remove(selected)">×</span>
           </div>
@@ -19,16 +19,18 @@
       <div class="filtro-search">
         <div class="v-select-box-input-group">
           <input ref="input" type="text" class="v-select-box-form-control v-select-box-input-sm" v-model="config.query" @input="debounce">
-          <span class="v-select-box-input-group-addon"><i class="fa fa-search"></i></span>
+          <div class="v-select-box-input-group-addon">
+            <img class="v-select-box-search" src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9Im5vIj8+CjxzdmcKICAgeG1sbnM6ZGM9Imh0dHA6Ly9wdXJsLm9yZy9kYy9lbGVtZW50cy8xLjEvIgogICB4bWxuczpjYz0iaHR0cDovL2NyZWF0aXZlY29tbW9ucy5vcmcvbnMjIgogICB4bWxuczpyZGY9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkvMDIvMjItcmRmLXN5bnRheC1ucyMiCiAgIHhtbG5zOnN2Zz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciCiAgIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIKICAgeG1sbnM6c29kaXBvZGk9Imh0dHA6Ly9zb2RpcG9kaS5zb3VyY2Vmb3JnZS5uZXQvRFREL3NvZGlwb2RpLTAuZHRkIgogICB4bWxuczppbmtzY2FwZT0iaHR0cDovL3d3dy5pbmtzY2FwZS5vcmcvbmFtZXNwYWNlcy9pbmtzY2FwZSIKICAgdmlld0JveD0iMCAwIDUxMiA1MTIiCiAgIHZlcnNpb249IjEuMSIKICAgaWQ9InN2ZzM3MTEiCiAgIHNvZGlwb2RpOmRvY25hbWU9InNlYXJjaDIuc3ZnIgogICBpbmtzY2FwZTp2ZXJzaW9uPSIwLjkyLjIgKDVjM2U4MGQsIDIwMTctMDgtMDYpIj4KICA8bWV0YWRhdGEKICAgICBpZD0ibWV0YWRhdGEzNzE3Ij4KICAgIDxyZGY6UkRGPgogICAgICA8Y2M6V29yawogICAgICAgICByZGY6YWJvdXQ9IiI+CiAgICAgICAgPGRjOmZvcm1hdD5pbWFnZS9zdmcreG1sPC9kYzpmb3JtYXQ+CiAgICAgICAgPGRjOnR5cGUKICAgICAgICAgICByZGY6cmVzb3VyY2U9Imh0dHA6Ly9wdXJsLm9yZy9kYy9kY21pdHlwZS9TdGlsbEltYWdlIiAvPgogICAgICAgIDxkYzp0aXRsZT48L2RjOnRpdGxlPgogICAgICA8L2NjOldvcms+CiAgICA8L3JkZjpSREY+CiAgPC9tZXRhZGF0YT4KICA8ZGVmcwogICAgIGlkPSJkZWZzMzcxNSIgLz4KICA8c29kaXBvZGk6bmFtZWR2aWV3CiAgICAgcGFnZWNvbG9yPSIjZmZmZmZmIgogICAgIGJvcmRlcmNvbG9yPSIjNjY2NjY2IgogICAgIGJvcmRlcm9wYWNpdHk9IjEiCiAgICAgb2JqZWN0dG9sZXJhbmNlPSIxMCIKICAgICBncmlkdG9sZXJhbmNlPSIxMCIKICAgICBndWlkZXRvbGVyYW5jZT0iMTAiCiAgICAgaW5rc2NhcGU6cGFnZW9wYWNpdHk9IjAiCiAgICAgaW5rc2NhcGU6cGFnZXNoYWRvdz0iMiIKICAgICBpbmtzY2FwZTp3aW5kb3ctd2lkdGg9IjE5MjAiCiAgICAgaW5rc2NhcGU6d2luZG93LWhlaWdodD0iMTAxNyIKICAgICBpZD0ibmFtZWR2aWV3MzcxMyIKICAgICBzaG93Z3JpZD0iZmFsc2UiCiAgICAgaW5rc2NhcGU6em9vbT0iMS42NTYyNSIKICAgICBpbmtzY2FwZTpjeD0iMTU3Ljg4Njc5IgogICAgIGlua3NjYXBlOmN5PSIyNTYiCiAgICAgaW5rc2NhcGU6d2luZG93LXg9Ii04IgogICAgIGlua3NjYXBlOndpbmRvdy15PSItOCIKICAgICBpbmtzY2FwZTp3aW5kb3ctbWF4aW1pemVkPSIxIgogICAgIGlua3NjYXBlOmN1cnJlbnQtbGF5ZXI9InN2ZzM3MTEiIC8+CiAgPHBhdGgKICAgICBkPSJNNTA1IDQ0Mi43TDQwNS4zIDM0M2MtNC41LTQuNS0xMC42LTctMTctN0gzNzJjMjcuNi0zNS4zIDQ0LTc5LjcgNDQtMTI4QzQxNiA5My4xIDMyMi45IDAgMjA4IDBTMCA5My4xIDAgMjA4czkzLjEgMjA4IDIwOCAyMDhjNDguMyAwIDkyLjctMTYuNCAxMjgtNDR2MTYuM2MwIDYuNCAyLjUgMTIuNSA3IDE3bDk5LjcgOTkuN2M5LjQgOS40IDI0LjYgOS40IDMzLjkgMGwyOC4zLTI4LjNjOS40LTkuNCA5LjQtMjQuNi4xLTM0ek0yMDggMzM2Yy03MC43IDAtMTI4LTU3LjItMTI4LTEyOCAwLTcwLjcgNTcuMi0xMjggMTI4LTEyOCA3MC43IDAgMTI4IDU3LjIgMTI4IDEyOCAwIDcwLjctNTcuMiAxMjgtMTI4IDEyOHoiCiAgICAgaWQ9InBhdGgzNzA5IgogICAgIHN0eWxlPSJzdHJva2U6bm9uZTtzdHJva2Utb3BhY2l0eTowO2ZpbGw6IzU1NTU1NTtmaWxsLW9wYWNpdHk6MSIgLz4KPC9zdmc+Cg==">
+          </div>
         </div>
       </div>
       <ul ref="list" class="filtro-list" @scroll="onScroll">
         <li v-for="item in config.items" class="filtro-item" :class="{ 'selected': item.selected }" @click="select(item)">
-          <span class="filtro-item-text">{{ item.text }}</span>
+          <span class="filtro-item-text item-color-dark">{{ item.text }}</span>
         </li>
-        <li v-if="config.items.length === 0" class="filtro-item">
-          <span v-if="loading">{{ config.i18n[config.locale].loading }}</span>
-          <span v-else>{{ config.i18n[config.locale].notFound }}</span>
+        <li v-if="config.items.length === 0" class="filtro-item filtro-item-text">
+          <span v-if="loading" class="item-color-dark">{{ config.i18n[config.locale].loading }}</span>
+          <span class="item-color-dark" v-else>{{ config.i18n[config.locale].notFound }}</span>
         </li>
       </ul>
     </div>
@@ -94,6 +96,8 @@
       },
       open () {
         this.debug(DEBUG.OPEN_CALLED)
+        this.config.page = 1
+        this.config.pageCount = 1
         this.opened = true
         this.$nextTick(() => {
           this.debug(DEBUG.REQUEST_FOCUS)
@@ -134,8 +138,12 @@
       load ({ more }) {
         const { load, params, pageSize, query, page } = this.config
         const { search, size } = params
-        let pageNum = more ? page + 1 : page
+        let pageNum = more ? page + 1 : 1
         this.loading = true
+
+        if (!more) {
+          this.config.items = []
+        }
 
         this.debug(DEBUG.LOAD_CALLED, { more, params: { [search]: query, [size]: pageSize, page: pageNum } })
         return load({ [search]: query, [size]: pageSize, page: pageNum })
@@ -208,7 +216,7 @@
     box-sizing: border-box;
   }
   .v-select-box {
-    font-size: 14px;
+    font-size: 13px;
   }
   .filtro-title {
     font-size: 13px;
@@ -220,7 +228,6 @@
     padding: 8px;
     border: 1px solid #e5e6e7;
     border-radius: 3px;
-    position: absolute;
     z-index: 999;
     background-color: #fff;
   }
@@ -304,6 +311,7 @@
     border-color: #e1777a;
   }
   .placeholder {
+    font-size: 14px;
     float: left;
     margin-left: 8px;
     margin-top: 3px;
@@ -396,5 +404,14 @@
   }
   .filtro-item-text {
     float: left;
+  }
+  .v-select-box-search {
+    width: 14px;
+  }
+  .item-color {
+    color: #999;
+  }
+  .item-color-dark {
+    color: #546E7A;
   }
 </style>
