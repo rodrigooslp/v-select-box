@@ -2,13 +2,13 @@
   <div v-click-outside="hide">
     <div class="bordered item-box" @click="open" :class="{ 'err': hasError }">
       <div class="items-panel">
-        <div v-for="selected in currentOptions.selected" class="var-item">
+        <div v-for="selected in config.selected" class="var-item">
           <div class="label-item">
             <span class="text">{{selected.text}}</span><span class="remove" @click="remove(selected)">×</span>
           </div>
         </div>
-        <div v-if="currentOptions.selected.length === 0 && currentOptions.placeholder" class="var-item placeholder">
-          <span>{{currentOptions.placeholder}}</span>
+        <div v-if="config.selected.length === 0 && config.placeholder" class="var-item placeholder">
+          <span>{{config.placeholder}}</span>
         </div>
       </div>
       <div class="var-item arrow-container">
@@ -18,15 +18,15 @@
     <div class="filtro-content" :class="{'hide': !opened}">
       <div class="filtro-search">
         <div class="input-group">
-          <input ref="input" type="text" class="form-control input-sm" v-model="currentOptions.query" @input="debounce">
+          <input ref="input" type="text" class="form-control input-sm" v-model="config.query" @input="debounce">
           <span class="input-group-addon"><i class="fa fa-search"></i></span>
         </div>
       </div>
       <ul ref="list" class="filtro-list" @scroll="onScroll">
-        <li v-for="item in currentOptions.items" class="filtro-item" :class="{ 'selected': item.selected }" @click="select(item)">
+        <li v-for="item in config.items" class="filtro-item" :class="{ 'selected': item.selected }" @click="select(item)">
           <span>{{ item.text }}</span>
         </li>
-        <li v-if="currentOptions.items.length === 0" class="filtro-item">
+        <li v-if="config.items.length === 0" class="filtro-item">
           <span v-if="loading">Pesquisando...</span>
           <span v-else>Nenhum item encontrado.</span>
         </li>
@@ -72,14 +72,14 @@
       ClickOutside
     },
     created () {
-      this.currentOptions = this.createOptions(this.options)
+      this.config = this.createConfig(this.options)
     },
     mounted () {
-      this.debug(DEBUG.MOUNTED, this.currentOptions)
+      this.debug(DEBUG.MOUNTED, this.config)
     },
     methods: {
       debug (msg, data) {
-        const { debug } = this.currentOptions
+        const { debug } = this.config
         if (debug) {
           data ? console.info({ msg, element: this.$el, data: { ...data } }) : console.info({ msg, element: this.$el })
         }
@@ -87,10 +87,10 @@
       hide () {
         this.debug(DEBUG.HIDE_CALLED)
         this.opened = false
-        this.currentOptions.page = 1
-        this.currentOptions.pageCount = 1
-        this.currentOptions.items = []
-        this.currentOptions.query = ''
+        this.config.page = 1
+        this.config.pageCount = 1
+        this.config.items = []
+        this.config.query = ''
       },
       open () {
         this.debug(DEBUG.OPEN_CALLED)
@@ -108,11 +108,11 @@
       remove (item, e) {
         this.debug(DEBUG.REMOVE_CALLED, item)
         const { id } = item
-        const { onSelect } = this.currentOptions
+        const { onSelect } = this.config
 
-        remove(this.currentOptions.selected, i => i.id === id)
+        remove(this.config.selected, i => i.id === id)
 
-        const i = this.currentOptions.items.find(i => i.id === item.id)
+        const i = this.config.items.find(i => i.id === item.id)
         if (i) i.selected = false
 
         if (onSelect) onSelect()
@@ -122,7 +122,7 @@
         return element.scrollHeight - element.scrollTop - element.clientHeight < 1
       },
       onScroll () {
-        const { page, pageCount } = this.currentOptions
+        const { page, pageCount } = this.config
 
         if (this.isEndOfList()) {
           this.debug(DEBUG.END_OF_LIST)
@@ -133,7 +133,7 @@
         }
       },
       load ({ more }) {
-        const { load, params, pageSize, query, page } = this.currentOptions
+        const { load, params, pageSize, query, page } = this.config
         const { search, size } = params
         let pageNum = more ? page + 1 : page
         this.loading = true
@@ -144,33 +144,33 @@
             this.debug(DEBUG.LOAD_FINISHED, response)
             this.loading = false
 
-            this.currentOptions.page = response.page
-            this.currentOptions.pageCount = response.pageCount
-            this.currentOptions.pageSize = response.pageSize
-            this.currentOptions.items = more ? this.currentOptions.items.concat(response.items) : response.items
+            this.config.page = response.page
+            this.config.pageCount = response.pageCount
+            this.config.pageSize = response.pageSize
+            this.config.items = more ? this.config.items.concat(response.items) : response.items
             this.checkSelected()
           })
       },
       select (item) {
-        const { multi, onSelect } = this.currentOptions
+        const { multi, onSelect } = this.config
 
         if (!multi) {
-          this.currentOptions.items.forEach(item => (item.selected = false))
-          this.currentOptions.selected = []
+          this.config.items.forEach(item => (item.selected = false))
+          this.config.selected = []
         }
 
-        const wasSelected = this.currentOptions.selected.find(i => i.id === item.id)
+        const wasSelected = this.config.selected.find(i => i.id === item.id)
         this.debug(DEBUG.SELECT_ITEM, { multi, item, wasSelected })
 
         if (!wasSelected) {
           item.selected = true
-          this.currentOptions.selected.push(item)
+          this.config.selected.push(item)
           if (onSelect) onSelect(item)
         } else {
           this.remove(item)
         }
       },
-      createOptions (options) {
+      createConfig (options) {
         if (!options) throw ERRORS.NO_OPTIONS
         if (typeof (options) !== 'object') throw ERRORS.WRONG_OPTIONS_TYPE
         if (!options.load) throw ERRORS.NO_LOAD
@@ -180,8 +180,8 @@
         return { ...defaultOptions, ...options, params }
       },
       checkSelected () {
-        this.currentOptions.selected.forEach(s => {
-          this.currentOptions.items.forEach(i => {
+        this.config.selected.forEach(s => {
+          this.config.items.forEach(i => {
             if (s.id === i.id) {
               i.selected = true
             }
@@ -193,7 +193,7 @@
       return {
         opened: false,
         loading: false,
-        currentOptions: {},
+        config: {},
         debounce: debounce(this.load, 500)
       }
     }
