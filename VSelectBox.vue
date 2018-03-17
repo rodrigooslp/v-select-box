@@ -38,10 +38,6 @@
 </template>
 
 <script>
-  // import 'bootstrap'
-  // import 'bootstrap/dist/css/bootstrap.css'
-  import 'font-awesome/css/font-awesome.css'
-
   import defaultOptions from './default'
   import ClickOutside from 'vue-click-outside'
   import { debounce, remove } from 'lodash'
