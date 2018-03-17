@@ -19,7 +19,7 @@ export default {
     },
     ptBR: {
       loading: 'Carregando...',
-      notFound: 'Nenhum resultado foi encontrado.'
+      notFound: 'Nenhum item encontrado.'
     }
   }
 }

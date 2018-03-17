@@ -48,7 +48,8 @@
     NO_OPTIONS: 'You should pass an object containing the options.',
     WRONG_OPTIONS_TYPE: 'The "options" type should be object.',
     NO_LOAD: 'You should pass a function to load the items.',
-    WRONG_LOAD_TYPE: 'The property "load" should be a function.'
+    WRONG_LOAD_TYPE: 'The property "load" should be a function.',
+    UNSUPPORTED_LOCALE: 'The choosen locale is not supported.'
   }
 
   const DEBUG = {
@@ -176,6 +177,9 @@
 
         const params = { ...defaultOptions.params, ...options.params }
         const i18n = { ...defaultOptions.i18n, ...options.i18n }
+
+        if (!i18n[options.locale]) throw ERRORS.UNSUPPORTED_LOCALE
+
         return { ...defaultOptions, ...options, params, i18n }
       },
       checkSelected () {
