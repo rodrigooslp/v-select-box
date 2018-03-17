@@ -1,4 +1,5 @@
 export default {
+  debug: false,
   multi: true,
   items: [],
   selected: [],

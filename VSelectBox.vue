@@ -4,7 +4,7 @@
       <div class="items-panel">
         <div v-for="selected in currentOptions.selected" class="var-item">
           <div class="label-item">
-            <span class="text">{{selected.text}}</span><span class="remove" @click="remove(selected, $event)">×</span>
+            <span class="text">{{selected.text}}</span><span class="remove" @click="remove(selected)">×</span>
           </div>
         </div>
         <div v-if="currentOptions.selected.length === 0 && currentOptions.placeholder" class="var-item placeholder">
@@ -36,18 +36,33 @@
 </template>
 
 <script>
-  import defaultOptions from './default'
-  import ClickOutside from 'vue-click-outside'
-  import { debounce, remove } from 'lodash'
   import 'bootstrap'
   import 'bootstrap/dist/css/bootstrap.css'
   import 'font-awesome/css/font-awesome.css'
+
+  import defaultOptions from './default'
+  import ClickOutside from 'vue-click-outside'
+  import { debounce, remove } from 'lodash'
 
   const ERRORS = {
     NO_OPTIONS: 'You should pass an object containing the options.',
     WRONG_OPTIONS_TYPE: 'The "options" type should be object.',
     NO_LOAD: 'You should pass a function to load the items.',
     WRONG_LOAD_TYPE: 'The property "load" should be a function.'
+  }
+
+  const DEBUG = {
+    MOUNTED: 'The component has been mounted.',
+    HIDE_CALLED: 'The "hide" function has been called.',
+    OPEN_CALLED: 'The "open" function has been called.',
+    REMOVE_CALLED: 'The "remove" function has been called.',
+    INITIAL_LOAD: 'The initial items have been loaded with success.',
+    END_OF_LIST: 'The list has been scrolled till the end.',
+    CURRENT_PAGE: 'Current page and the total pages available.',
+    LOAD_CALLED: 'The "load" function has been called.',
+    LOAD_FINISHED: 'The "load" function has been finished with success.',
+    SELECT_ITEM: 'An item has been selected.',
+    REQUEST_FOCUS: 'Focus has been requested for the search input.'
   }
 
   export default {
@@ -59,27 +74,40 @@
     created () {
       this.currentOptions = this.createOptions(this.options)
     },
+    mounted () {
+      this.debug(DEBUG.MOUNTED, this.currentOptions)
+    },
     methods: {
+      debug (msg, data) {
+        if (this.currentOptions.debug) {
+          data ? console.log({ msg, el: this.$el, data: { ...data } }) : console.log({ msg, el: this.$el })
+        }
+      },
       hide () {
+        this.debug(DEBUG.HIDE_CALLED)
         this.opened = false
         this.currentOptions.page = 1
         this.currentOptions.pageCount = 1
         this.currentOptions.items = []
         this.currentOptions.query = ''
       },
-      open (e) {
+      open () {
+        this.debug(DEBUG.OPEN_CALLED)
         this.opened = true
-        this.$nextTick(() => this.$refs.input.focus())
+        this.$nextTick(() => {
+          this.debug(DEBUG.REQUEST_FOCUS)
+          this.$refs.input.focus()
+        })
         this.load({ more: false }).then(() => {
+          this.debug(DEBUG.INITIAL_LOAD)
           const element = this.$refs.list
           element.scrollTop = 0
         })
       },
       remove (item, e) {
+        this.debug(DEBUG.REMOVE_CALLED, item)
         const { id } = item
         const { onSelect } = this.currentOptions
-
-        if (e) e.stopPropagation()
 
         remove(this.currentOptions.selected, i => i.id === id)
 
@@ -87,7 +115,6 @@
         if (i) i.selected = false
 
         if (onSelect) onSelect()
-        this.$forceUpdate()
       },
       isEndOfList () {
         const element = this.$refs.list
@@ -96,8 +123,12 @@
       onScroll () {
         const { page, pageCount } = this.currentOptions
 
-        if (page < pageCount && this.isEndOfList()) {
-          this.load({ more: true })
+        if (this.isEndOfList()) {
+          this.debug(DEBUG.END_OF_LIST)
+          if (page < pageCount) {
+            this.debug(DEBUG.CURRENT_PAGE, { page, pageCount })
+            this.load({ more: true })
+          }
         }
       },
       load ({ more }) {
@@ -106,8 +137,10 @@
         let pageNum = more ? page + 1 : page
         this.loading = true
 
+        this.debug(DEBUG.LOAD_CALLED, { more, params: { [search]: query, [size]: pageSize, page: pageNum } })
         return load({ [search]: query, [size]: pageSize, page: pageNum })
           .then(response => {
+            this.debug(DEBUG.LOAD_FINISHED, response)
             this.loading = false
 
             this.currentOptions.page = response.page
@@ -125,7 +158,10 @@
           this.currentOptions.selected = []
         }
 
-        if (!this.currentOptions.selected.find(i => i.id === item.id)) {
+        const wasSelected = this.currentOptions.selected.find(i => i.id === item.id)
+        this.debug(DEBUG.SELECT_ITEM, { multi, item, wasSelected })
+
+        if (!wasSelected) {
           item.selected = true
           this.currentOptions.selected.push(item)
           if (onSelect) onSelect(item)
