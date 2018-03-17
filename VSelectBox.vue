@@ -57,9 +57,11 @@
         this.currentOptions.page = 1
         this.currentOptions.pageCount = 1
         this.currentOptions.items = []
+        this.currentOptions.query = ''
       },
       open (e) {
-        this.opened = !this.opened
+        this.opened = true
+        this.$nextTick(() => this.$refs.input.focus())
         this.load({ more: false }).then(() => {
           const element = this.$refs.list
           element.scrollTop = 0
@@ -98,7 +100,6 @@
 
         return load({ [search]: query, [size]: pageSize, page: pageNum })
           .then(response => {
-            console.log(response)
             this.loading = false
 
             this.currentOptions.page = response.page
@@ -145,7 +146,6 @@
     },
     data () {
       return {
-        query: '',
         opened: false,
         loading: false,
         currentOptions: {},
