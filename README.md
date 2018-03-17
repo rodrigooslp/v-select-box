@@ -7,9 +7,6 @@ Description
 
 A vue.js component to provide a box with a list of items with search and pagination.
 
-To integrate it with vuex, use the helper [v-select-box-vuex](https://www.npmjs.com/package/v-select-box-vuex). Use it to create the store module 
-(together with the necessary actions, mutations, getters and the state).
-
 Installation
 -------------------------------------
 
@@ -35,19 +32,8 @@ Basic Usage
     data () {
       return {
         options: {
-          multiSelect: false,
-          page: 1,
-          pageCount: 1,
-          items: [],
-          itemsPerPage: 10,
-          onSelect () => {},
-          onSearch () => {},
-          loadMore () => {},
-          clearItems () => {},
-          params: {
-            search: 'name',
-            pageSize: 'pageSize'
-          }
+          onSelect (item) => {},
+          load (params) => {}
         }
       }
     }
@@ -58,87 +44,68 @@ Basic Usage
 Options
 -------------------------------------
 
-Name            | Type     | Default   | Description
-:-------------- | :------  | :------   | :----------
-multiSelect     | boolean  | false     | Whether or not it allows selection of multiple values.
-page            | number   | 1         | Used on the pagination to detemine which is the next page to request.
-pageCount       | number   | 1         | Used on the pagination to detemine if the current page is the last.
-items           | array    | []        | The items that should be displayed.
-itemsPerPage    | number   | 10        | Used on the pagination to detemine how many items each page will have.
-onSelect        | function | undefined | Called when the user clicks an item.
-onSearch        | function | undefined | Called when the search box receives an input.
-loadMore        | function | undefined | Called when the user scrolls to the end of the list, requesting the next page.
-clearItems      | function | undefined | Called internally to clear the items array.
-params          | object   | {}        | Optional object with the names of params sent in the requests.
+Name            | Type     | Default   | Required | Description
+:-------------- | :------  | :------   | :------- |:----------
+multi           | boolean  | true      | false    | Whether or not it allows selection of multiple values.
+debug           | boolean  | false     | false    | Debug flag that enables console messages.
+page            | number   | 1         | false    | Used to detemine which is the next page to request.
+pageCount       | number   | 1         | false    | Used to detemine if the current page is the last.
+pageSize        | number   | 10        | false    | How many items each page will have.
+placeholder     | string   | ''        | false    | The placeholder displayed.
+locale          | string   | 'enUS'    | false    | The language displayed.
+items           | array    | []        | false    | The items that should be displayed.
+selected        | array    | []        | false    | The items that have been selected.
+onSelect        | function | undefined | true     | Called after the user clicks an item.
+load            | function | undefined | true     | Called to request items to display in the list.
+params          | object   | {}        | false    | Optional object with the names of params sent in the requests.
 
 Params
 -------------------------------------
 
-Name            | Type     | Default   | Description
-:-------------- | :------  | :------   | :----------
-search          | string   | nome      | The name of the param to send the search query in the requests.
-pageSize        | string   | pageSize  | The name of the param to send the size of the page in the requests.
+Name            | Type     | Default   | Required | Description
+:-------------- | :------  | :------   | :------- | :----------
+search          | string   | q         | false    | The name of the param to send the search query in the requests.
+size            | string   | pageSize  | false    | The name of the param to send the size of the page in the requests.
 
 Methods
 -------------------------------------
+
 #### onSelect()
-The `onSelect()` method is called after the user clicks an item and receives an object containing the item and a flag showing if multiSelect is enabled or not. It doesn't need to return anything.
+The `onSelect()` method is called after the user clicks an item and receives an object containing the item.
 ##### Syntax
-`onSelect({ item, multiSelect })`
+`onSelect(item)`
 ##### Parameters
-- `item` the object representing the list item. It has three properties: 
+- `item` the object representing the list item. It has three properties:
   - `id` an unique identifier
   - `text` the text visible on the item itself
   - `selected` a boolean value indicating if the item is selected or not
-- `multiSelect` the boolean value showing if the v-select-box multiSelect mode is active 
 
   PS: this is the item suggested structure, there isn't any place where this is hardcoded. It is done this way because it's easier to plug the vuex helper with a simple format like this.
 ##### Return Value
-The `onSelect()` method don't have to return anything.
-  
+The `onSelect()` method doesn't have to return anything.
+
 --------------------------------------
-#### onSearch()
-The `onSearch()` method is called after a debounce when the search box has an input. When it is called, the parameter is an object with the search term that was typed in the search box and the page size. This method needs to return a Promise. The reason is that after the search is done, the component has to redraw the tooltips for the new items.
+#### load()
+The `load()` method is called when the component needs to populate the list with items. When it is called, the parameter is an object with the search term that was typed in the search box and the page size and the number of the page that needs to be requested. The `load()` method needs to return a Promise. The promise needs to be resolved with an object with the following structure:
+- `page` the current page
+- `pageCount` the total of pages
+- `pageSize` how many items each page has
+- `items` an array containing the items that should be displayed
+  - `id` an unique identifier
+  - `text` the text visible on the item itself
+  - `selected` a boolean value indicating if the item is selected or not
 ##### Syntax
-`onSearch({ [search], [pageSize] })`
-##### Parameters
-- `search` the actual name of the property depends on the `params.search`, that could've been passed to the component via the options object. If a `params.search` is not set, the default name for this parameter is `nome`.
-- `pageSize` the actual name of the property depends on the `params.pageSize`, that could've been passed to the component via the options object. If a `params.pageSize` is not set, the default name for this parameter is `pageSize`.
-##### Return Value
-For the reason expressed above, the `onSearch()` method has to return a Promise.
-  
---------------------------------------
-#### loadMore()
-The `loadMore()` method is called when the user scrolls down to the end of the list. When it is called, the parameter is an object with the search term that was typed in the search box and the page size and the number of the current page plus one, if that page exists. If the list is already at the last page, this method won't be called. The `loadMore()` method needs to return a Promise. The reason is that after the loading is done, the component has to redraw the tooltips for the new items.
-##### Syntax
-`loadMore({ [search], [pageSize], page })`
+`load({ [search], [size], page })`
 ##### Parameters
 - `search` the actual name of the property depends on the `params.search`, that could've been passed to the component via the options object. If a `params.search` is not set, the default name for this parameter is `nome`.
 - `pageSize` the actual name of the property depends on the `params.pageSize`, that could've been passed to the component via the options object. If a `params.pageSize` is not set, the default name for this parameter is `pageSize`.
 - `page` the number of the page that the component is requesting. The next page.
 ##### Return Value
-For the reason expressed above, the `loadMore()` method has to return a Promise.
-  
---------------------------------------
-#### clearItems()
-The `clearItems()` method is an internal function that clears the list of items. It is exposed this way to help us work with vuex. It will be reworked/removed in the future versions.
-##### Syntax
-`clearItems()`
-##### Parameters
-It doesn't have any parameters
-##### Return Value
-It doesn't need to return anything.
-  
--------------------------------------
-
-Examples
--------------------------------------
-
-There is a simple working example in [this](https://github.com/rodrigooslp/v-select-box-example) repository. A full example with [v-select-box-vuex](https://www.npmjs.com/package/v-select-box-vuex), with all bells and whistles is on the roadmap and will be up soon.
+For the reason expressed above, the `load()` method has to return a Promise.
 
 New Features
 -------------------------------------
 
 There is a list of features that are currently being worked on. They will be pushed to this repository as soon as they're finished.
-  
+
 Your feedback is appreciated!

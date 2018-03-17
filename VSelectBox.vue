@@ -184,7 +184,7 @@
 
         if (!i18n[options.locale]) throw ERRORS.UNSUPPORTED_LOCALE
 
-        return { ...defaultOptions, ...options, params, i18n }
+        return { ...defaultOptions, ...options, params, i18n, multi: true }
       },
       checkSelected () {
         this.config.selected.forEach(s => {
