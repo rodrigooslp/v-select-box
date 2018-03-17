@@ -1,5 +1,5 @@
 <template>
-  <div v-click-outside="hide">
+  <div v-click-outside="hide" class="v-select-box">
     <div class="bordered item-box" @click="open" :class="{ 'err': hasError }">
       <div class="items-panel">
         <div v-for="selected in config.selected" class="var-item">
@@ -17,9 +17,9 @@
     </div>
     <div class="filtro-content" :class="{'hide': !opened}">
       <div class="filtro-search">
-        <div class="input-group">
-          <input ref="input" type="text" class="form-control input-sm" v-model="config.query" @input="debounce">
-          <span class="input-group-addon"><i class="fa fa-search"></i></span>
+        <div class="v-select-box-input-group">
+          <input ref="input" type="text" class="v-select-box-form-control v-select-box-input-sm" v-model="config.query" @input="debounce">
+          <span class="v-select-box-input-group-addon"><i class="fa fa-search"></i></span>
         </div>
       </div>
       <ul ref="list" class="filtro-list" @scroll="onScroll">
@@ -36,8 +36,8 @@
 </template>
 
 <script>
-  import 'bootstrap'
-  import 'bootstrap/dist/css/bootstrap.css'
+  // import 'bootstrap'
+  // import 'bootstrap/dist/css/bootstrap.css'
   import 'font-awesome/css/font-awesome.css'
 
   import defaultOptions from './default'
@@ -204,6 +204,12 @@
 </script>
 
 <style scoped>
+  * {
+    box-sizing: border-box;
+  }
+  .v-select-box {
+    font-size: 14px;
+  }
   .filtro-title {
     font-size: 13px;
   }
@@ -315,5 +321,76 @@
   }
   .items-panel {
     margin-right: 25px;
+  }
+  .v-select-box-input-group {
+    position: relative;
+    display: table;
+    border-collapse: separate;
+  }
+  .v-select-box-input-group .form-control:first-child {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+  }
+  .v-select-box-input-group .form-control {
+    display: table-cell;
+  }
+  .v-select-box-input-group .form-control {
+    position: relative;
+    z-index: 2;
+    float: left;
+    width: 100%;
+    margin-bottom: 0;
+  }
+  .v-select-box-input-sm {
+    height: 30px;
+    padding: 5px 10px;
+    font-size: 12px;
+    line-height: 1.5;
+    border-radius: 3px;
+  }
+  .v-select-box-form-control {
+    display: block;
+    width: 100%;
+    height: 34px;
+    padding: 6px 12px;
+    font-size: 14px;
+    line-height: 1.42857143;
+    color: #555;
+    background-color: #fff;
+    background-image: none;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075);
+    box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075);
+    -webkit-transition: border-color ease-in-out .15s, -webkit-box-shadow ease-in-out .15s;
+    -o-transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+    transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+  }
+  input {
+    font-family: inherit;
+    margin: 0;
+    font: inherit;
+  }
+  .v-select-box-input-group-addon:last-child {
+    border-left: 0;
+  }
+  .v-select-box-input-group-addon:last-child {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+  }
+  .v-select-box-input-group-addon {
+    padding: 6px 12px;
+    font-size: 14px;
+    font-weight: normal;
+    line-height: 1;
+    color: #555;
+    text-align: center;
+    background-color: #eee;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    width: 1%;
+    white-space: nowrap;
+    vertical-align: middle;
+    display: table-cell;
   }
 </style>
