@@ -79,8 +79,9 @@
     },
     methods: {
       debug (msg, data) {
-        if (this.currentOptions.debug) {
-          data ? console.log({ msg, el: this.$el, data: { ...data } }) : console.log({ msg, el: this.$el })
+        const { debug } = this.currentOptions
+        if (debug) {
+          data ? console.info({ msg, element: this.$el, data: { ...data } }) : console.info({ msg, element: this.$el })
         }
       },
       hide () {
