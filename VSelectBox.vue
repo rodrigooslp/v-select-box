@@ -1,10 +1,18 @@
 <template>
   <div v-click-outside="hide">
     <div class="bordered item-box" @click="open" :class="{ 'err': hasError }">
-      <div v-for="selected in currentOptions.selected" class="var-item">
-        <div class="label-item">
-          <span class="text">{{selected.text}}</span><span class="remove" @click="remove(selected, $event)">×</span>
+      <div class="items-panel">
+        <div v-for="selected in currentOptions.selected" class="var-item">
+          <div class="label-item">
+            <span class="text">{{selected.text}}</span><span class="remove" @click="remove(selected, $event)">×</span>
+          </div>
         </div>
+        <div v-if="currentOptions.selected.length === 0 && currentOptions.placeholder" class="var-item placeholder">
+          <span>{{currentOptions.placeholder}}</span>
+        </div>
+      </div>
+      <div class="var-item arrow-container">
+        <span class="arrow"></span>
       </div>
     </div>
     <div class="filtro-content" :class="{'hide': !opened}">
@@ -211,6 +219,8 @@
     margin-bottom: 10px;
   }
   .item-box {
+    cursor: pointer;
+    overflow: hidden;
     min-height: 40px;
     width: 240px;
     max-width: 240px;
@@ -245,5 +255,25 @@
   }
   .err {
     border-color: #e1777a;
+  }
+  .placeholder {
+    float: left;
+    margin-left: 8px;
+    margin-top: 3px;
+    color: #999;
+  }
+  .arrow {
+    border-color: #888 transparent transparent;
+    border-style: solid;
+    border-width: 5px 4px 0;
+  }
+  .arrow-container{
+    position: absolute;
+    margin-right: 10px;
+    right: 0;
+    top: 50%;
+  }
+  .items-panel {
+    margin-right: 25px;
   }
 </style>
