@@ -54,6 +54,9 @@
     methods: {
       hide () {
         this.opened = false
+        this.currentOptions.page = 1
+        this.currentOptions.pageCount = 1
+        this.currentOptions.items = []
       },
       open (e) {
         this.opened = !this.opened
@@ -90,7 +93,7 @@
       load ({ more }) {
         const { load, params, itemsPerPage, query, page } = this.currentOptions
         const { search, pageSize } = params
-        const pageNum = more ? page + 1 : page
+        let pageNum = more ? page + 1 : page
         this.loading = true
 
         return load({ [search]: query, [pageSize]: itemsPerPage, page: pageNum })
