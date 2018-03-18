@@ -15,11 +15,13 @@ export default {
   i18n: {
     enUS: {
       loading: 'Loading...',
-      notFound: 'No results were found.'
+      notFound: 'No results were found.',
+      error: 'An error has happened.'
     },
     ptBR: {
       loading: 'Carregando...',
-      notFound: 'Nenhum item encontrado.'
+      notFound: 'Nenhum item encontrado.',
+      error: 'Aconteceu um erro.'
     }
   }
 }

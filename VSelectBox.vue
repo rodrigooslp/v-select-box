@@ -29,8 +29,13 @@
           <span class="filtro-item-text item-color-dark">{{ item.text }}</span>
         </li>
         <li v-if="config.items.length === 0" class="filtro-item filtro-item-text full-width">
-          <span v-if="loading" class="item-color-dark filtro-item-text">{{ config.i18n[config.locale].loading }}</span>
-          <span class="item-color-dark filtro-item-text" v-else>{{ config.i18n[config.locale].notFound }}</span>
+          <div v-if="error">
+            <span class="item-color-dark filtro-item-text">{{ config.i18n[config.locale].error }}</span>
+          </div>
+          <div v-else>
+            <span v-if="loading" class="item-color-dark filtro-item-text">{{ config.i18n[config.locale].loading }}</span>
+            <span v-else class="item-color-dark filtro-item-text">{{ config.i18n[config.locale].notFound }}</span>
+          </div>
         </li>
       </ul>
     </div>
@@ -89,12 +94,14 @@
         this.config.pageCount = 1
         this.config.items = []
         this.config.query = ''
+        this.error = false
       },
       open () {
         this.debug(DEBUG.OPEN_CALLED)
         this.config.page = 1
         this.config.pageCount = 1
         this.opened = true
+        this.error = false
         this.$nextTick(() => {
           this.debug(DEBUG.REQUEST_FOCUS)
           this.$refs.input.focus()
@@ -153,6 +160,10 @@
             this.config.items = more ? this.config.items.concat(response.items) : response.items
             this.checkSelected()
           })
+          .catch(err => {
+            this.error = true
+            throw err
+          })
       },
       select (item) {
         const { multi, onSelect } = this.config
@@ -200,6 +211,7 @@
       return {
         opened: false,
         loading: false,
+        error: false,
         config: {},
         debounce: debounce(this.load, 500)
       }
