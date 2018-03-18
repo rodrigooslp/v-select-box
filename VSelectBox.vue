@@ -60,7 +60,11 @@
     WRONG_OPTIONS_TYPE: 'The "options" type should be object.',
     NO_LOAD: 'You should pass a function to load the items.',
     WRONG_LOAD_TYPE: 'The property "load" should be a function.',
-    UNSUPPORTED_LOCALE: 'The choosen locale is not supported.'
+    UNSUPPORTED_LOCALE: 'The choosen locale is not supported.',
+    WRONG_VALUE_SINGLE: 'In single select mode, the v-model should be an object.',
+    WRONG_VALUE_MULTI: 'In multi select mode, the v-model should be an array.',
+    MISSING_ITEM_PROPS: 'To be displayed correctly, each item should have an "id" and a "text".',
+    RESPONSE_MISSING_PROPS: 'The Promise returned by the "load" function should resolve to an object that has the following properties: page, pageCount, pageSize and items.'
   }
 
   const DEBUG = {
@@ -170,6 +174,14 @@
         return load({ [search]: query, [size]: pageSize, page: pageNum })
           .then(response => {
             this.debug(DEBUG.LOAD_FINISHED, response)
+            if (!response.page || !response.pageCount || !response.pageSize || !response.items) throw ERRORS.RESPONSE_MISSING_PROPS
+
+            let err = false
+            response.items.forEach(item => {
+              if (!item.id || !item.text) err = true
+            })
+            if (err) throw ERRORS.MISSING_ITEM_PROPS
+
             this.loading = false
 
             this.config.page = response.page
@@ -215,11 +227,25 @@
         if (!options.load) throw ERRORS.NO_LOAD
         if (typeof (options.load) !== 'function') throw ERRORS.WRONG_LOAD_TYPE
 
+        if (!Array.isArray(value) && typeof (value) === 'object') {
+          if (options.multi) throw ERRORS.WRONG_VALUE_MULTI
+          if (!value.id || !value.text) throw ERRORS.MISSING_ITEM_PROPS
+        }
+
+        if (Array.isArray(value)) {
+          let err = false
+          if (!options.multi) throw ERRORS.WRONG_VALUE_SINGLE
+          value.forEach(item => {
+            if (!item.id || !item.text) err = true
+          })
+          if (err) throw ERRORS.MISSING_ITEM_PROPS
+        }
+
         let selected
         if (!value) selected = []
         else {
-          if (typeof (value) === 'object') selected = [value]
-          if (Array.isArray(value)) selected = value
+          if (!Array.isArray(value) && typeof (value) === 'object') selected = [value]
+          else if (Array.isArray(value)) selected = value
         }
         const params = { ...defaultOptions.params, ...options.params }
         const i18n = { ...defaultOptions.i18n, ...options.i18n }
