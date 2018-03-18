@@ -28,9 +28,9 @@
         <li v-for="item in config.items" class="filtro-item" :class="{ 'selected': item.selected }" @click="select(item)">
           <span class="filtro-item-text item-color-dark">{{ item.text }}</span>
         </li>
-        <li v-if="config.items.length === 0" class="filtro-item filtro-item-text">
-          <span v-if="loading" class="item-color-dark">{{ config.i18n[config.locale].loading }}</span>
-          <span class="item-color-dark" v-else>{{ config.i18n[config.locale].notFound }}</span>
+        <li v-if="config.items.length === 0" class="filtro-item filtro-item-text full-width">
+          <span v-if="loading" class="item-color-dark filtro-item-text">{{ config.i18n[config.locale].loading }}</span>
+          <span class="item-color-dark filtro-item-text" v-else>{{ config.i18n[config.locale].notFound }}</span>
         </li>
       </ul>
     </div>
@@ -409,5 +409,8 @@
   }
   .item-color-dark {
     color: #546E7A;
+  }
+  .full-width {
+    width: 100%;
   }
 </style>
