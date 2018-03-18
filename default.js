@@ -1,6 +1,6 @@
 export default {
   debug: false,
-  multi: true,
+  multi: false,
   items: [],
   selected: [],
   query: '',

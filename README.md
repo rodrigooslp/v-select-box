@@ -46,7 +46,7 @@ Options
 
 Name            | Type     | Default   | Required | Description
 :-------------- | :------  | :------   | :------- |:----------
-multi           | boolean  | true      | false    | Whether or not it allows selection of multiple values.
+multi           | boolean  | false     | false    | Whether or not it allows selection of multiple items.
 debug           | boolean  | false     | false    | Debug flag that enables console messages.
 page            | number   | 1         | false    | Used to detemine which is the next page to request.
 pageCount       | number   | 1         | false    | Used to detemine if the current page is the last.
