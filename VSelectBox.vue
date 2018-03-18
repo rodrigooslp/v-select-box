@@ -139,6 +139,7 @@
         if (multi) {
           this.$emit('input', this.config.selected)
         } else {
+          this.hide()
           this.$emit('input', this.config.selected[0])
         }
       },
@@ -215,6 +216,7 @@
           if (multi) {
             this.$emit('input', this.config.selected)
           } else {
+            this.hide()
             this.$emit('input', this.config.selected[0])
           }
         } else {
