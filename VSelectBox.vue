@@ -264,6 +264,14 @@
         })
       }
     },
+    watch: {
+      options: {
+        deep: true,
+        handler (newOptions) {
+          this.config = this.createConfig(newOptions, this.value)
+        }
+      }
+    },
     data () {
       return {
         opened: false,
