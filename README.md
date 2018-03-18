@@ -54,8 +54,7 @@ pageSize        | number   | 10        | false    | How many items each page wil
 placeholder     | string   | ''        | false    | The placeholder displayed.
 locale          | string   | 'enUS'    | false    | The language displayed.
 items           | array    | []        | false    | The items that should be displayed.
-selected        | array    | []        | false    | The items that have been selected.
-onSelect        | function | undefined | true     | Called after the user clicks an item.
+onSelect        | function | undefined | false    | Called after the user clicks an item.
 load            | function | undefined | true     | Called to request items to display in the list.
 params          | object   | {}        | false    | Optional object with the names of params sent in the requests.
 

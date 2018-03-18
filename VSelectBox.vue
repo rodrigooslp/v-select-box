@@ -78,12 +78,12 @@
 
   export default {
     name: 'VSelectBox',
-    props: ['options', 'hasError'],
+    props: ['options', 'hasError', 'value'],
     directives: {
       ClickOutside
     },
     created () {
-      this.config = this.createConfig(this.options)
+      this.config = this.createConfig(this.options, this.value)
     },
     mounted () {
       this.debug(DEBUG.MOUNTED, this.config)
@@ -183,7 +183,6 @@
           if (!multi) {
             this.config.items.forEach(i => (i.selected = false))
             this.config.selected.length = 0
-            // this.config.selected = []
           }
           item.selected = true
           this.config.selected.push(item)
@@ -191,19 +190,31 @@
         } else {
           this.remove(item)
         }
+
+        if (multi) {
+          this.$emit('input', this.config.selected)
+        } else {
+          this.$emit('input', this.config.selected[0])
+        }
       },
-      createConfig (options) {
+      createConfig (options, value) {
         if (!options) throw ERRORS.NO_OPTIONS
         if (typeof (options) !== 'object') throw ERRORS.WRONG_OPTIONS_TYPE
         if (!options.load) throw ERRORS.NO_LOAD
         if (typeof (options.load) !== 'function') throw ERRORS.WRONG_LOAD_TYPE
 
+        let selected
+        if (!value) selected = []
+        else {
+          if (typeof (value) === 'object') selected = [value]
+          if (Array.isArray(value)) selected = value
+        }
         const params = { ...defaultOptions.params, ...options.params }
         const i18n = { ...defaultOptions.i18n, ...options.i18n }
 
         if (!i18n[options.locale]) throw ERRORS.UNSUPPORTED_LOCALE
 
-        return { ...defaultOptions, ...options, params, i18n }
+        return { ...defaultOptions, ...options, params, i18n, selected }
       },
       checkSelected () {
         this.config.selected.forEach(s => {

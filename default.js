@@ -2,7 +2,6 @@ export default {
   debug: false,
   multi: false,
   items: [],
-  selected: [],
   query: '',
   page: 1,
   pageCount: 1,
