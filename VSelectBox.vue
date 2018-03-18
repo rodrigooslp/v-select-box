@@ -122,14 +122,21 @@
       remove (item, e) {
         this.debug(DEBUG.REMOVE_CALLED, item)
         const { id } = item
-        const { onSelect } = this.config
+        const { onSelect, multi } = this.config
 
         remove(this.config.selected, i => i.id === id)
 
         const i = this.config.items.find(i => i.id === item.id)
         if (i) i.selected = false
 
-        if (onSelect) onSelect()
+        this.$nextTick(() => this.$parent.$forceUpdate())
+        if (onSelect) onSelect({ ...item, selected: false })
+
+        if (multi) {
+          this.$emit('input', this.config.selected)
+        } else {
+          this.$emit('input', this.config.selected[0])
+        }
       },
       isEndOfList () {
         const element = this.$refs.list
@@ -145,6 +152,9 @@
             this.load({ more: true })
           }
         }
+      },
+      mapSelected (item) {
+        return { selected: false, ...item }
       },
       load ({ more }) {
         const { load, params, pageSize, query, page } = this.config
@@ -165,7 +175,7 @@
             this.config.page = response.page
             this.config.pageCount = response.pageCount
             this.config.pageSize = response.pageSize
-            this.config.items = more ? this.config.items.concat(response.items) : response.items
+            this.config.items = more ? this.config.items.concat(response.items.map(this.mapSelected)) : response.items.map(this.mapSelected)
             this.checkSelected()
           })
           .catch(err => {
@@ -184,17 +194,19 @@
             this.config.items.forEach(i => (i.selected = false))
             this.config.selected.length = 0
           }
+
           item.selected = true
           this.config.selected.push(item)
-          if (onSelect) onSelect(item)
+
+          if (onSelect) onSelect({ ...item })
+
+          if (multi) {
+            this.$emit('input', this.config.selected)
+          } else {
+            this.$emit('input', this.config.selected[0])
+          }
         } else {
           this.remove(item)
-        }
-
-        if (multi) {
-          this.$emit('input', this.config.selected)
-        } else {
-          this.$emit('input', this.config.selected[0])
         }
       },
       createConfig (options, value) {

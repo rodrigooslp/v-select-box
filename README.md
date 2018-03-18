@@ -18,7 +18,7 @@ Basic Usage
 ```html
 <template>
   <div id="app">
-    <v-select-box :options="options"></v-select-box>
+    <v-select-box v-model="selected" :options="options"></v-select-box>
   </div>
 </template>
 
@@ -31,8 +31,8 @@ Basic Usage
     },
     data () {
       return {
+        selected: {}
         options: {
-          onSelect (item) => {},
           load (params) => {}
         }
       }
@@ -92,15 +92,14 @@ The `load()` method is called when the component needs to populate the list with
 - `items` an array containing the items that should be displayed
   - `id` an unique identifier
   - `text` the text visible on the item itself
-  - `selected` a boolean value indicating if the item is selected or not
 ##### Syntax
 `load({ [search], [size], page })`
 ##### Parameters
-- `search` the actual name of the property depends on the `params.search`, that could've been passed to the component via the options object. If a `params.search` is not set, the default name for this parameter is `nome`.
-- `pageSize` the actual name of the property depends on the `params.pageSize`, that could've been passed to the component via the options object. If a `params.pageSize` is not set, the default name for this parameter is `pageSize`.
+- `search` the actual name of the property depends on the `params.search`, that could've been passed to the component via the options object. If a `params.search` is not set, the default name for this parameter is `q`.
+- `size` the actual name of the property depends on the `params.size`, that could've been passed to the component via the options object. If a `params.size` is not set, the default name for this parameter is `pageSize`.
 - `page` the number of the page that the component is requesting. The next page.
 ##### Return Value
-For the reason expressed above, the `load()` method has to return a Promise.
+For the reasons expressed above, the `load()` method has to return a Promise.
 
 New Features
 -------------------------------------
