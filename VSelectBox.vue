@@ -176,15 +176,15 @@
       select (item) {
         const { multi, onSelect } = this.config
 
-        if (!multi) {
-          this.config.items.forEach(item => (item.selected = false))
-          this.config.selected = []
-        }
-
         const wasSelected = this.config.selected.find(i => i.id === item.id)
         this.debug(DEBUG.SELECT_ITEM, { multi, item, wasSelected })
 
         if (!wasSelected) {
+          if (!multi) {
+            this.config.items.forEach(i => (i.selected = false))
+            this.config.selected.length = 0
+            // this.config.selected = []
+          }
           item.selected = true
           this.config.selected.push(item)
           if (onSelect) onSelect(item)
@@ -233,6 +233,7 @@
   }
   .v-select-box {
     font-size: 13px;
+    user-select: none;
   }
   .filtro-title {
     font-size: 13px;
