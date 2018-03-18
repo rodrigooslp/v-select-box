@@ -2,9 +2,17 @@
   <div v-click-outside="hide" class="v-select-box">
     <div class="bordered item-box" @click="open" :class="{ 'err': hasError }">
       <div class="items-panel">
-        <div v-for="selected in config.selected" class="var-item filtro-item-text">
+        <div v-if="config.multi" v-for="selected in config.selected" class="var-item filtro-item-text">
           <div class="label-item">
             <span class="text">{{selected.text}}</span><span class="remove" @click="remove(selected)">×</span>
+          </div>
+        </div>
+        <div v-else class="var-item filtro-item-text">
+          <div v-if="config.selected[0]">
+            <div class="single-item">
+              <span class="text filtro-item-text">{{selected.text}}</span>
+              <span class="remove single-remove" @click="remove(selected)">×</span>
+            </div>
           </div>
         </div>
         <div v-if="config.selected.length === 0 && config.placeholder" class="var-item placeholder">
@@ -195,7 +203,7 @@
 
         if (!i18n[options.locale]) throw ERRORS.UNSUPPORTED_LOCALE
 
-        return { ...defaultOptions, ...options, params, i18n, multi: true }
+        return { ...defaultOptions, ...options, params, i18n }
       },
       checkSelected () {
         this.config.selected.forEach(s => {
@@ -424,5 +432,19 @@
   }
   .full-width {
     width: 100%;
+  }
+  .single-item {
+    display: inline-block;
+    padding: 4px 6px;
+    cursor: pointer;
+    transition: all .2s linear;
+    font-size: 13px;
+    padding-bottom: 0px;
+  }
+  .single-remove {
+    position: absolute;
+    right: 35px;
+    font-size: 16px;
+    top: 8px;
   }
 </style>
