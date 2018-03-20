@@ -51,6 +51,7 @@ debug           | boolean  | false     | false    | Debug flag that enables cons
 page            | number   | 1         | false    | Used to detemine which is the next page to request.
 pageCount       | number   | 1         | false    | Used to detemine if the current page is the last.
 pageSize        | number   | 10        | false    | How many items each page will have.
+minimumInput    | number   | 0         | false    | The minimum number of characters the search query should have.
 placeholder     | string   | ''        | false    | The placeholder displayed.
 locale          | string   | 'enUS'    | false    | The language displayed.
 items           | array    | []        | false    | The items that should be displayed.

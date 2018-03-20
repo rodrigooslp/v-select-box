@@ -42,7 +42,10 @@
           </div>
           <div v-else>
             <span v-if="loading" class="item-color-dark filtro-item-text">{{ config.i18n[config.locale].loading }}</span>
-            <span v-else class="item-color-dark filtro-item-text">{{ config.i18n[config.locale].notFound }}</span>
+            <div v-else>
+              <span v-if="config.debouncedQuery.length < config.minimumInput" class="item-color-dark filtro-item-text">{{ config.i18n[config.locale].notEnough(config.minimumInput) }}</span>
+              <span v-else class="item-color-dark filtro-item-text">{{ config.i18n[config.locale].notFound }}</span>
+            </div>
           </div>
         </li>
       </ul>
@@ -162,39 +165,46 @@
         return { selected: false, ...item }
       },
       load ({ more }) {
-        const { load, params, pageSize, query, page } = this.config
-        const { search, size } = params
-        let pageNum = more ? page + 1 : 1
-        this.loading = true
+        const { load, params, pageSize, query, page, minimumInput } = this.config
 
-        if (!more) {
+        this.config.debouncedQuery = query
+
+        if (query.length >= minimumInput) {
+          const { search, size } = params
+          let pageNum = more ? page + 1 : 1
+          this.loading = true
+
+          if (!more) {
+            this.config.items = []
+          }
+
+          this.debug(DEBUG.LOAD_CALLED, { more, params: { [search]: query, [size]: pageSize, page: pageNum } })
+          return load({ [search]: query, [size]: pageSize, page: pageNum })
+            .then(response => {
+              this.debug(DEBUG.LOAD_FINISHED, response)
+              if (response.page === undefined || response.pageCount === undefined || response.pageSize === undefined || response.items === undefined) throw ERRORS.RESPONSE_MISSING_PROPS
+
+              let err = false
+              response.items.forEach(item => {
+                if (!item.id || !item.text) err = true
+              })
+              if (err) throw ERRORS.MISSING_ITEM_PROPS
+
+              this.loading = false
+
+              this.config.page = response.page
+              this.config.pageCount = response.pageCount
+              this.config.pageSize = response.pageSize
+              this.config.items = more ? this.config.items.concat(response.items.map(this.mapSelected)) : response.items.map(this.mapSelected)
+              this.checkSelected()
+            })
+            .catch(err => {
+              this.error = true
+              throw err
+            })
+        } else {
           this.config.items = []
         }
-
-        this.debug(DEBUG.LOAD_CALLED, { more, params: { [search]: query, [size]: pageSize, page: pageNum } })
-        return load({ [search]: query, [size]: pageSize, page: pageNum })
-          .then(response => {
-            this.debug(DEBUG.LOAD_FINISHED, response)
-            if (response.page === undefined || response.pageCount === undefined || response.pageSize === undefined || response.items === undefined) throw ERRORS.RESPONSE_MISSING_PROPS
-
-            let err = false
-            response.items.forEach(item => {
-              if (!item.id || !item.text) err = true
-            })
-            if (err) throw ERRORS.MISSING_ITEM_PROPS
-
-            this.loading = false
-
-            this.config.page = response.page
-            this.config.pageCount = response.pageCount
-            this.config.pageSize = response.pageSize
-            this.config.items = more ? this.config.items.concat(response.items.map(this.mapSelected)) : response.items.map(this.mapSelected)
-            this.checkSelected()
-          })
-          .catch(err => {
-            this.error = true
-            throw err
-          })
       },
       select (item) {
         const { multi, onSelect } = this.config

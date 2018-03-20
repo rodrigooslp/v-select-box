@@ -3,9 +3,11 @@ export default {
   multi: false,
   items: [],
   query: '',
+  debouncedQuery: '',
   page: 1,
   pageCount: 1,
   pageSize: 10,
+  minimumInput: 0,
   params: {
     search: 'q',
     size: 'pageSize'
@@ -15,12 +17,18 @@ export default {
     enUS: {
       loading: 'Loading...',
       notFound: 'No results were found.',
-      error: 'An error has happened.'
+      error: 'An error has happened.',
+      notEnough (num) {
+        return `Please enter ${num} or more characters.`
+      }
     },
     ptBR: {
       loading: 'Carregando...',
       notFound: 'Nenhum item encontrado.',
-      error: 'Aconteceu um erro.'
+      error: 'Aconteceu um erro.',
+      notEnough (num) {
+        return `Por favor digite ${num} ou mais caracteres.`
+      }
     }
   }
 }
