@@ -56,7 +56,8 @@
 <script>
   import defaultOptions from './default'
   import ClickOutside from 'vue-click-outside'
-  import { debounce, remove } from 'lodash'
+  import debounce from 'lodash.debounce'
+  import remove from 'lodash.remove'
 
   const ERRORS = {
     NO_OPTIONS: 'You should pass an object containing the options.',

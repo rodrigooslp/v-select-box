@@ -1,6 +1,6 @@
 {
   "name": "v-select-box",
-  "version": "2.1.1",
+  "version": "2.2.0",
   "description": "A vue.js component to provide a box with a list of items with search and pagination.",
   "main": "index.js",
   "scripts": {
@@ -11,13 +11,14 @@
     "url": "git+https://github.com/rodrigooslp/v-select-box.git"
   },
   "author": "Rodrigo Lopes <rodrigooslp@gmail.com>",
-  "license" : "SEE LICENSE IN LICENSE",
+  "license": "SEE LICENSE IN LICENSE",
   "bugs": {
     "url": "https://github.com/rodrigooslp/v-select-box/issues"
   },
   "homepage": "https://github.com/rodrigooslp/v-select-box#readme",
   "dependencies": {
-    "lodash": "^4.17.4",
+    "lodash.debounce": "^4.0.8",
+    "lodash.remove": "^4.7.0",
     "vue-click-outside": "^1.0.7"
   },
   "devDependencies": {
