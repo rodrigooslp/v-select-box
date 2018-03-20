@@ -204,6 +204,7 @@
             })
         } else {
           this.config.items = []
+          return Promise.resolve()
         }
       },
       select (item) {
