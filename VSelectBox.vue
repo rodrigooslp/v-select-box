@@ -175,7 +175,7 @@
         return load({ [search]: query, [size]: pageSize, page: pageNum })
           .then(response => {
             this.debug(DEBUG.LOAD_FINISHED, response)
-            if (!response.page || !response.pageCount || !response.pageSize || !response.items) throw ERRORS.RESPONSE_MISSING_PROPS
+            if (response.page === undefined || response.pageCount === undefined || response.pageSize === undefined || response.items === undefined) throw ERRORS.RESPONSE_MISSING_PROPS
 
             let err = false
             response.items.forEach(item => {
