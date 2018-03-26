@@ -5,7 +5,14 @@
 Description
 -------------------------------------
 
-A vue.js component to provide a box with a list of items with search and pagination.
+A vue.js component to provide a box with a list of items with search and pagination, without the overhead of jquery.
+
+Features
+-------------------------------------
+- Search
+- Infinite Scroll
+- Single/Multi Select
+- Minimal Size
 
 Installation
 -------------------------------------
@@ -44,28 +51,30 @@ Basic Usage
 Options
 -------------------------------------
 
-Name            | Type     | Default   | Required | Description
-:-------------- | :------  | :------   | :------- |:----------
-multi           | boolean  | false     | false    | Whether or not it allows selection of multiple items.
-debug           | boolean  | false     | false    | Debug flag that enables console messages.
-page            | number   | 1         | false    | Used to detemine which is the next page to request.
-pageCount       | number   | 1         | false    | Used to detemine if the current page is the last.
-pageSize        | number   | 10        | false    | How many items each page will have.
-minimumInput    | number   | 0         | false    | The minimum number of characters the search query should have.
-placeholder     | string   | ''        | false    | The placeholder displayed.
-locale          | string   | 'enUS'    | false    | The language displayed.
-items           | array    | []        | false    | The items that should be displayed.
-onSelect        | function | undefined | false    | Called after the user clicks an item.
-load            | function | undefined | true     | Called to request items to display in the list.
-params          | object   | {}        | false    | Optional object with the names of params sent in the requests.
+The only property required for the `v-select-box` to work is the `load` function. All the other ones are optional.
+
+Name            | Type     | Default   | Description
+:-------------- | :------  | :------   |:----------
+multi           | boolean  | false     | Whether or not it allows selection of multiple items.
+debug           | boolean  | false     | Debug flag that enables console messages.
+page            | number   | 1         | Used to detemine which is the next page to request.
+pageCount       | number   | 1         | Used to detemine if the current page is the last.
+pageSize        | number   | 10        | How many items each page will have.
+minimumInput    | number   | 0         | The minimum number of characters the search query should have.
+placeholder     | string   | ''        | The placeholder displayed.
+locale          | string   | 'enUS'    | The language displayed.
+items           | array    | []        | The items that should be displayed.
+onSelect        | function | undefined | Called after the user clicks an item.
+load            | function | undefined | Called to request items to display in the list.
+params          | object   | {}        | Optional object with the names of params sent in the requests.
 
 Params
 -------------------------------------
 
-Name            | Type     | Default   | Required | Description
-:-------------- | :------  | :------   | :------- | :----------
-search          | string   | q         | false    | The name of the param to send the search query in the requests.
-size            | string   | pageSize  | false    | The name of the param to send the size of the page in the requests.
+Name            | Type     | Default   | Description
+:-------------- | :------  | :------   | :----------
+search          | string   | q         | The name of the param to send the search query in the requests.
+size            | string   | pageSize  | The name of the param to send the size of the page in the requests.
 
 Methods
 -------------------------------------
@@ -80,7 +89,6 @@ The `onSelect()` method is called after the user clicks an item and receives an 
   - `text` the text visible on the item itself
   - `selected` a boolean value indicating if the item is selected or not
 
-  PS: this is the item suggested structure, there isn't any place where this is hardcoded. It is done this way because it's easier to plug the vuex helper with a simple format like this.
 ##### Return Value
 The `onSelect()` method doesn't have to return anything.
 

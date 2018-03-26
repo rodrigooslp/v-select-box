@@ -1,11 +1,14 @@
 {
   "name": "v-select-box",
-  "version": "2.2.0",
+  "version": "2.2.1",
   "description": "A vue.js component to provide a box with a list of items with search and pagination.",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "keywords": [
+    "select", "autocomplete", "infinite", "dropdown", "multiselect", "vue"
+  ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/rodrigooslp/v-select-box.git"
