@@ -305,11 +305,13 @@
   .v-select-box {
     font-size: 13px;
     user-select: none;
+    position: relative;
   }
   .filtro-title {
     font-size: 13px;
   }
   .filtro-content {
+    position: absolute;
     width: 100%;
     margin-bottom: 30px;
     max-width: 100%;
