@@ -418,7 +418,7 @@
     margin-right: 10px;
     right: 0;
     top: 50%;
-    transform: translateY(-50%);
+    /* transform: translateY(-50%); */
   }
   .items-panel {
     margin-right: 25px;
