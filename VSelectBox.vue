@@ -8,14 +8,14 @@
           </div>
         </div>
         <div v-else class="var-item filtro-item-text">
-          <div v-if="config.selected[0]">
+          <div v-if="config.selected[0].id">
             <div class="single-item">
               <span class="text filtro-item-text">{{selected.text}}</span>
               <span class="remove single-remove" @click="remove(selected)">×</span>
             </div>
           </div>
         </div>
-        <div v-if="config.selected.length === 0 && config.placeholder" class="var-item placeholder">
+        <div v-if="(config.selected.length === 0 || !config.selected[0].id) && config.placeholder" class="var-item placeholder">
           <span>{{config.placeholder}}</span>
         </div>
       </div>
@@ -144,7 +144,7 @@
           this.$emit('input', this.config.selected)
         } else {
           this.hide()
-          this.$emit('input', this.config.selected[0])
+          this.$emit('input', this.config.selected[0] ? this.config.selected[0] : {})
         }
       },
       isEndOfList () {
@@ -229,7 +229,7 @@
             this.$emit('input', this.config.selected)
           } else {
             this.hide()
-            this.$emit('input', this.config.selected[0])
+            this.$emit('input', this.config.selected[0] ? this.config.selected[0] : {})
           }
         } else {
           this.remove(item)
@@ -283,6 +283,13 @@
         deep: true,
         handler (newOptions) {
           this.config = this.createConfig(newOptions, this.value)
+        }
+      },
+      value: {
+        deep: true,
+        handler (newValue) {
+          if (Array.isArray(newValue)) this.config.selected = newValue
+          else this.config.selected = [newValue]
         }
       }
     },
