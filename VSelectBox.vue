@@ -103,8 +103,8 @@
           data ? console.info({ msg, element: this.$el, data: { ...data } }) : console.info({ msg, element: this.$el })
         }
       },
-      hide () {
-        this.debug(DEBUG.HIDE_CALLED)
+      hide (caller) {
+        this.debug(DEBUG.HIDE_CALLED, { caller })
         this.opened = false
         this.config.page = 1
         this.config.pageCount = 1
@@ -148,7 +148,7 @@
         if (multi) {
           this.$emit('input', this.config.selected)
         } else {
-          this.hide()
+          this.hide('remove function')
           this.$emit('input', this.config.selected[0] ? this.config.selected[0] : {})
         }
       },
@@ -233,7 +233,7 @@
           if (multi) {
             this.$emit('input', this.config.selected)
           } else {
-            this.hide()
+            this.hide('select function')
             this.$emit('input', this.config.selected[0] ? this.config.selected[0] : {})
           }
         } else {
