@@ -243,16 +243,10 @@
 
         if (!Array.isArray(value) && typeof (value) === 'object') {
           if (options.multi) throw ERRORS.WRONG_VALUE_MULTI
-          if (!value.id || !value.text) throw ERRORS.MISSING_ITEM_PROPS
         }
 
         if (Array.isArray(value)) {
-          let err = false
           if (!options.multi) throw ERRORS.WRONG_VALUE_SINGLE
-          value.forEach(item => {
-            if (!item.id || !item.text) err = true
-          })
-          if (err) throw ERRORS.MISSING_ITEM_PROPS
         }
 
         let selected
