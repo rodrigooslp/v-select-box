@@ -1,17 +1,17 @@
 <template>
-  <div v-click-outside="hide" class="v-select-box">
+  <div v-click-outside="outside" class="v-select-box">
     <div class="bordered item-box" @click="open" :class="{ 'err': hasError }">
       <div class="items-panel">
         <div v-if="config.multi" v-for="selected in config.selected" class="var-item filtro-item-text">
           <div class="label-item">
-            <span class="text">{{selected.text}}</span><span class="remove" @click="remove(selected)">×</span>
+            <span class="text">{{selected.text}}</span><span class="remove" @click.stop="remove(selected)">×</span>
           </div>
         </div>
         <div v-else class="var-item filtro-item-text">
           <div v-if="config.selected[0].id">
             <div class="single-item">
               <span class="text filtro-item-text">{{selected.text}}</span>
-              <span class="remove single-remove" @click="remove(selected)">×</span>
+              <span class="remove single-remove" @click.stop="remove(selected)">×</span>
             </div>
           </div>
         </div>
@@ -97,6 +97,9 @@
       this.debug(DEBUG.MOUNTED, this.config)
     },
     methods: {
+      outside () {
+        this.hide('click outside')
+      },
       debug (msg, data) {
         const { debug } = this.config
         if (debug) {
@@ -150,6 +153,14 @@
         } else {
           this.hide('remove function')
           this.$emit('input', this.config.selected[0] ? this.config.selected[0] : {})
+        }
+
+        if (!this.opened) this.open()
+        else {
+          this.$nextTick(() => {
+            this.debug(DEBUG.REQUEST_FOCUS)
+            this.$refs.input.focus()
+          })
         }
       },
       isEndOfList () {
@@ -239,6 +250,10 @@
         } else {
           this.remove(item)
         }
+        this.$nextTick(() => {
+          this.debug(DEBUG.REQUEST_FOCUS)
+          this.$refs.input.focus()
+        })
       },
       createConfig (options, value) {
         if (!options) throw ERRORS.NO_OPTIONS
