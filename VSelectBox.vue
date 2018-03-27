@@ -114,18 +114,23 @@
       },
       open () {
         this.debug(DEBUG.OPEN_CALLED)
-        this.config.page = 1
-        this.config.pageCount = 1
-        this.opened = true
-        this.error = false
-        this.$nextTick(() => {
+        if (!this.opened) {
+          this.config.page = 1
+          this.config.pageCount = 1
+          this.opened = true
+          this.error = false
+          this.$nextTick(() => {
+            this.debug(DEBUG.REQUEST_FOCUS)
+            this.$refs.input.focus()
+          })
+          this.load({ more: false }).then(() => {
+            const element = this.$refs.list
+            element.scrollTop = 0
+          })
+        } else {
           this.debug(DEBUG.REQUEST_FOCUS)
           this.$refs.input.focus()
-        })
-        this.load({ more: false }).then(() => {
-          const element = this.$refs.list
-          element.scrollTop = 0
-        })
+        }
       },
       remove (item, e) {
         this.debug(DEBUG.REMOVE_CALLED, item)
