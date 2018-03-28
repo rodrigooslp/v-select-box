@@ -1,6 +1,6 @@
 <template>
   <div v-click-outside="outside" class="v-select-box">
-    <div class="bordered item-box" @click="open" :class="{ 'err': hasError }">
+    <div ref="box" class="bordered item-box" @click="open" :class="{ 'err': hasError }">
       <div class="items-panel">
         <div v-if="config.multi" v-for="selected in config.selected" class="var-item filtro-item-text">
           <div class="label-item">
@@ -155,7 +155,7 @@
           this.$emit('input', this.config.selected[0] ? this.config.selected[0] : {})
         }
 
-        if (!this.opened) this.open()
+        if (!this.opened) this.$refs.box.click()
         else {
           this.$nextTick(() => {
             this.debug(DEBUG.REQUEST_FOCUS)
