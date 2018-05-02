@@ -332,7 +332,7 @@
     font-size: 13px;
   }
   .filtro-content {
-    margin-top: 10px;
+    margin-top: 4px;
     position: absolute;
     width: 100%;
     margin-bottom: 30px;
