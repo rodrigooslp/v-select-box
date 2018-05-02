@@ -332,6 +332,7 @@
     font-size: 13px;
   }
   .filtro-content {
+    margin-top: 10px;
     position: absolute;
     width: 100%;
     margin-bottom: 30px;
@@ -381,7 +382,7 @@
   .bordered {
     border: 1px solid #e5e6e7;
     border-radius: 3px;
-    margin-bottom: 10px;
+    /* margin-bottom: 10px; */
   }
   .item-box {
     cursor: pointer;
