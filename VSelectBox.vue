@@ -339,7 +339,7 @@
     max-width: 100%;
     padding: 8px;
     border: 1px solid #e5e6e7;
-    border-radius: 3px;
+    border-radius: 1px;
     z-index: 999;
     background-color: #fff;
   }
@@ -381,13 +381,13 @@
   }
   .bordered {
     border: 1px solid #e5e6e7;
-    border-radius: 3px;
+    border-radius: 1px;
     /* margin-bottom: 10px; */
   }
   .item-box {
     cursor: pointer;
     overflow: hidden;
-    min-height: 40px;
+    min-height: 34px;
     /* width: 240px; */
     max-width: 100%;
     padding: 4px;
@@ -403,7 +403,7 @@
     color: #fff;
     display: inline-block;
     padding: 4px 6px;
-    border-radius: 2px;
+    border-radius: 1px;
     cursor: pointer;
     transition: all .2s linear;
     font-size: 12px;
@@ -426,7 +426,7 @@
     font-size: 14px;
     float: left;
     margin-left: 8px;
-    margin-top: 3px;
+    margin-top: 2px;
     color: #999;
   }
   .arrow {
@@ -439,7 +439,7 @@
     margin-right: 10px;
     right: 0;
     top: 50%;
-    /* transform: translateY(-50%); */
+    transform: translateY(-50%);
   }
   .items-panel {
     margin-right: 25px;
@@ -468,7 +468,7 @@
     padding: 5px 10px;
     font-size: 12px;
     line-height: 1.5;
-    border-radius: 3px;
+    border-radius: 1px;
   }
   .v-select-box-form-control {
     display: block;
@@ -481,7 +481,7 @@
     background-color: #fff;
     background-image: none;
     border: 1px solid #ccc;
-    border-radius: 4px;
+    border-radius: 1px;
     -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075);
     box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075);
     -webkit-transition: border-color ease-in-out .15s, -webkit-box-shadow ease-in-out .15s;
@@ -509,7 +509,7 @@
     text-align: center;
     background-color: #eee;
     border: 1px solid #ccc;
-    border-radius: 4px;
+    border-radius: 1px;
     width: 1%;
     white-space: nowrap;
     vertical-align: middle;
@@ -532,7 +532,7 @@
   }
   .single-item {
     display: inline-block;
-    padding: 4px 6px;
+    padding: 0px 6px;
     cursor: pointer;
     transition: all .2s linear;
     font-size: 13px;
@@ -541,7 +541,7 @@
   .single-remove {
     position: absolute;
     right: 35px;
-    font-size: 16px;
-    top: 8px;
+    font-size: 15px;
+    top: 5.5px;
   }
 </style>
