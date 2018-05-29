@@ -1,6 +1,6 @@
 <template>
   <div v-click-outside="outside" class="v-select-box">
-    <div ref="box" class="bordered item-box" @click="open" :class="{ 'err': hasError }">
+    <div ref="box" class="bordered item-box" @click="open" :class="{ 'err': hasError, 'v-select-disabled': disable }">
       <div class="items-panel">
         <div v-if="config.multi" v-for="selected in config.selected" class="var-item filtro-item-text">
           <div class="label-item">
@@ -86,7 +86,7 @@
 
   export default {
     name: 'VSelectBox',
-    props: ['options', 'hasError', 'value'],
+    props: ['options', 'hasError', 'value', 'disable'],
     directives: {
       ClickOutside
     },
@@ -117,22 +117,24 @@
       },
       open () {
         this.debug(DEBUG.OPEN_CALLED)
-        if (!this.opened) {
-          this.config.page = 1
-          this.config.pageCount = 1
-          this.opened = true
-          this.error = false
-          this.$nextTick(() => {
+        if (!this.disable) {
+          if (!this.opened) {
+            this.config.page = 1
+            this.config.pageCount = 1
+            this.opened = true
+            this.error = false
+            this.$nextTick(() => {
+              this.debug(DEBUG.REQUEST_FOCUS)
+              this.$refs.input.focus()
+            })
+            this.load({ more: false }).then(() => {
+              const element = this.$refs.list
+              element.scrollTop = 0
+            })
+          } else {
             this.debug(DEBUG.REQUEST_FOCUS)
             this.$refs.input.focus()
-          })
-          this.load({ more: false }).then(() => {
-            const element = this.$refs.list
-            element.scrollTop = 0
-          })
-        } else {
-          this.debug(DEBUG.REQUEST_FOCUS)
-          this.$refs.input.focus()
+          }
         }
       },
       remove (item, e) {
@@ -543,5 +545,9 @@
     right: 35px;
     font-size: 15px;
     top: 5.5px;
+  }
+  .v-select-disabled {
+    background-color: #eee;
+    cursor: default;
   }
 </style>
