@@ -1,6 +1,6 @@
 {
   "name": "v-select-box",
-  "version": "2.3.0",
+  "version": "2.3.1",
   "description": "A vue.js component to provide a box with a list of items with search and pagination.",
   "main": "index.js",
   "scripts": {

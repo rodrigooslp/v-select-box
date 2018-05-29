@@ -307,6 +307,9 @@
           if (Array.isArray(newValue)) this.config.selected = newValue
           else this.config.selected = [newValue]
         }
+      },
+      disable (value) {
+        if (value) this.config.selected = []
       }
     },
     data () {
