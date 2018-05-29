@@ -309,7 +309,10 @@
         }
       },
       disable (value) {
-        if (value) this.config.selected = []
+        if (value) {
+          this.config.selected = []
+          if (this.config.onSelect) this.config.onSelect({ selected: false })
+        }
       }
     },
     data () {
