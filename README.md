@@ -42,9 +42,14 @@ Basic Usage
     },
     data () {
       return {
-        selected: {}
+        selected: {},
         options: {
-          load (params) => {}
+          load: (params) => {
+            //Request code goes here
+            //Should return a Promise, resolving the result object
+            const mock = { page: 1, pageCount: 1, pageSize: 10, items: [{ id: 1, text: 'test1' }, { id: 2, text: 'test2' }] }
+            return Promise(mock)
+          }
         }
       }
     }
