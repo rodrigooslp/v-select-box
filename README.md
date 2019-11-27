@@ -1,6 +1,10 @@
 # v-select-box
 [![npm](https://img.shields.io/npm/v/v-select-box.svg)](https://www.npmjs.com/package/v-select-box)
-[![npm](https://img.shields.io/npm/dt/v-select-box.svg)](https://www.npmjs.com/package/v-select-box)
+[![npm](https://img.shields.io/npm/dy/v-select-box)](https://www.npmjs.com/package/v-select-box)
+
+Demo
+-------------------------------------
+There is an example showcasing the component [here](https://github.com/rodrigooslp/v-select-box-example).
 
 Description
 -------------------------------------
